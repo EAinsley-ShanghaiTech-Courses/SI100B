@@ -99,6 +99,6 @@ if __name__ == "__main__":
         _check_git_installation()
         _check_git_signature()
     except DependencyError:
-        print("Failed: Please fix the problem above before continue.")
+        print("Failed: Please fix the problem above before you continue.")
         exit(-1)
     _draw_si100b()
