@@ -42,13 +42,15 @@ git add test.py output.txt
 git commit -m '{your commit message}'
 ```
 
-Then push your code to the auto-grader to create a submission. Every push will create a new submission in the system.
+Then add a tag to request grading on your current submission:
 
-```sh
-git push
+```shell
+git tag {tagname} && git push origin {tagname}
 ```
 
-You can track your submissions on the web interface of the auto-grader.
+Beware that all of your tag names should be distinguished among one homework repo. Therefore, remember to use **a new tag name** `{tagname}` in each submission.
+
+Every submission will create a new GitLab issue, where you can track the progress.
 
 ## Regulations
 
