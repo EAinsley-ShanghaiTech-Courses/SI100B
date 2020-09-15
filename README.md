@@ -29,9 +29,9 @@ Remember to make your repository private before making any commits.
 
 Note: Markdown text with file extension .md could be displayed properly using plug-ins in your browsers, IDEs or specialized markdown editors (like typora).
 # Repository Structure
-* `README.md`: This file. The specification for this homework.
-* `analysis.py`: The template file for your submission.
-* `data/sample.csv`: The template data for your test.
+* `README.md`: This file. The specification for this homework;
+* `analysis.py`: The template file for your submission;
+* `data/sample.csv`: The sample data for your to write your own tests. Different from the dataset we use for test your program in the Auto-grader.
 
 ## Submission
 
