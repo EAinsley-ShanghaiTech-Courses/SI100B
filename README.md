@@ -1,7 +1,7 @@
 # SI 100B Homework 1: Flight Analytics
 
 - **Last Modified:** Sept. 15, 2020
-- **Release Time:** Sept. 16 2020 23:59 CST
+- **Release Time:** Sept. 15 2020 23:59 CST
 - **Deadline:** Oct. 2 2020 23:59 CST
 
 # Introduction
