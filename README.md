@@ -144,7 +144,7 @@ Implement this task in `task3(filename)`. This function takes a single argument 
 
 ## Testing and Grading
 
-In the `data` directory we provided you with some simple data and tests for you to examine the correctness of your code. Those tests are pretty simple and naïve. Passing them does not guarantee that you will pass test cases in the auto-grader on your submission. **So read carefully about the specification and create your own reasonable testcase, and do not use the auto-grader as your debugging tool.**
+In the `data` directory we provided you with some simple data and tests for you to examine the correctness of your code. Those tests are pretty simple and naïve. Passing them does not guarantee that you will pass test cases in the auto-grader on your submission. Also, we will use a **different** set of data to test your program. **So read carefully about the specification and create your own reasonable testcase, and do not use the auto-grader as your debugging tool.**
 
 To help your find out which part of your code may be wrong in hope to reduce the time consumption of you on this homework, each testcase will have a label indicating which task the testcase is focusing on. The label will be in the form of `m-n`. For example, the label `2-1` means this testcase is the 1st testcase aiming to test your implementation in task 2.
 
