@@ -72,9 +72,9 @@ In this task, you are required to read in data from a CSV file into your program
 
 This task requires you to read in the data from a file on the disk and store the data in a structured way. That means you need to parse the data you read in from the file as a single string and store the data you read in to data structures like dictionary, list, tuple and so on (or any combination of them). The information in CSV file is recommended to be separated as two parts, keys (i.e., the first line in the CSV) and data rows (i.e., the following lines).
 
-You should take into consideration how you access the data in the following tasks. A hint is that you may store processed data in global variables so that you can have easy access to them in the following tasks.
+You should take into consideration how you access the data in the following tasks.
 
-Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your format. The routines for reading in the CSV table from `filename` has been written for you. You are expected to implement rest part of this function all by yourself. The built-in library `csv` is not allowed in this homework.
+Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your own format. Designing a scheme that could save you tons of time in the following tasks. The routines for reading in the CSV table from `filename` has been written for you. You are expected to implement rest part of this function all by yourself. The built-in library `csv` is not allowed in this homework.
 
 
 # Task 1: Who Flies More than 1500 Miles?
