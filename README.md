@@ -124,7 +124,7 @@ The function `task2(filename, airline, key, value)` will also need to call `read
 
 * Input CSV `sample.csv` is the same as the one in Task 1.
 * Output:
-  * `task2("sample.csv", AA", "YEAR", 2015)` should return `1`.
+  * `task2("sample.csv", "AA", "YEAR", 2015)` should return `1`.
   * `task2("sample.csv", "AA", "YEAR", 2016)` should return `2`.
   * `task2("sample.csv", "NK", "FLIGHT_NUMBER", 999)` should return `2`.
 

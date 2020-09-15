@@ -18,7 +18,7 @@ def read_csv_for_data(filename: str):
 
 def task1(filename: str):
     """
-    Task 2
+    Task 1
 
     @filename: the file name of the data file.
 
