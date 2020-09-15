@@ -23,7 +23,7 @@ The data is stored in a CSV (comma separated value) file. The CSV file usually c
 
 In this homework, you are going to write your code to read in the flight data from the CSV file and complete 3 data analysis tasks. Let's get started and have fun!
 # Getting Started
-To get started, please simply fork the repository on GitLab and follow the structure and submissions guidelines below and on Piazza.
+To get started, please simply fork the [repository](http://gitlab.q71998.cn/homework-fall2020/homework1) on GitLab and follow the structure and submissions guidelines below and on Piazza.
 
 Remember to make your repository private before making any commits.
 
@@ -64,7 +64,7 @@ Every submission will create a new GitLab issue, where you can track the progres
 
 - No late submissions will be accepted.
 - You have 30 chances of grading (i.e. `git push`) in this homework. If you hand in more 30 times, each extra submission will lead to 10% deduction in your score. In addition, you are able to request grading at most 10 times every 24 hours.
-- We enforce academic integrity strictly. **DO NOT** try to hack the auto-grader in any way. You can view the full version of the code of conduct on [Course Webpage](https://si100b.org/resource-policy/#policies).
+- We enforce academic integrity strictly. **DO NOT** try to hack the auto-grader in any way. You can view the full version of the code of conduct on [course webpage](https://si100b.org/resource-policy/#policies).
 - If you have any questions about this homework, please ask it on Piazza first so that everyone else can benefit from your question and the answer.
 # Specification
 # Task 0: Set up and Read in Data
@@ -74,7 +74,7 @@ This task requires you to read in the data from a file on the disk and store the
 
 You should take into consideration how you access the data in the following tasks. A hint is that you may store processed data in global variables so that you can have easy access to them in the following tasks.
 
-Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your format. You are expected to implement this function all by yourself.The built-in library `csv` is not allowed in this homework.
+Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your format. The routines for reading in the CSV table from `filename` has been written for you. You are expected to implement rest part of this function all by yourself. The built-in library `csv` is not allowed in this homework.
 
 
 # Task 1: Who Flies More than 1500 Miles?
@@ -141,3 +141,16 @@ Implement this task in `task3(filename)`. This function takes a single argument 
 
 * Input CSV `sample.csv` is the same as the one in Task 1.
 * Output: You should return `[('AA', 1.0), ('CA', 1.0), ('GS', 1.0), ('QS', 1.0), ('NK', 0.5), ('SS', 0.0)]` for this data file.
+
+## Testing and Grading
+
+In the `data` directory we provided you with some simple data and tests for you to examine the correctness of your code. Those tests are pretty simple and naïve. Passing them does not guarantee that you will pass test cases in the auto-grader on your submission. **So read carefully about the specification and create your own reasonable testcase, and do not use the auto-grader as your debugging tool.**
+
+To help your find out which part of your code may be wrong in hope to reduce the time consumption of you on this homework, each testcase will have a label indicating which task the testcase is focusing on. The label will be in the form of `m-n`. For example, the label `2-1` means this testcase is the 1st testcase aiming to test your implementation in task 2.
+
+Good luck!
+
+## Feedbacks
+
+- If you find any mistake in this homework, please contact us directly. Any mistakes or typos will be corrected ASAP.
+- Comments on this homework are always welcomed so that we could do better. You are also welcome to send us feedback anonymously if you like. Refer to the [course homepage](https://si100b.org) for feedback channels.
