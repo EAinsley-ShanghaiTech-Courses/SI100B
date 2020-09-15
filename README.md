@@ -70,11 +70,11 @@ Every submission will create a new GitLab issue, where you can track the progres
 # Task 0: Set up and Read in Data
 In this task, you are required to read in data from a CSV file into your program. The sample data will be provided in your repository. The data is includes flight information such as the flight number, departure delay, and arrival time.
 
-This task requires you to read in the data from a file on the disk and store the data in a structured way. That means you need to parse the data you read in from the file as a single string and store the data you read in to data structures like dictionary, list, tuple and so on (or any combination of them). The information in CSV file is recommended to be separated as two parts, keys (i.e., the first line in the CSV) and data rows (i.e., the following lines).
+This task requires you to read in the data from a file on the disk and store the data in a structured way. That means you need to parse the data you read in from the file as a single string and store the data you read in to data structures like dictionary, list, tuple and so on (or any combination of them). In other words, you are going to *parse* the CSV data you read in in this function. The information in CSV file is recommended to be separated as two parts, keys (i.e., the first line in the CSV) and data rows (i.e., the following lines).
 
 You should take into consideration how you access the data in the following tasks.
 
-Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your own format. Designing a scheme that could save you tons of time in the following tasks. The routines for reading in the CSV table from `filename` has been written for you. You are expected to implement rest part of this function all by yourself. The built-in library `csv` is not allowed in this homework.
+Implement this task in `read_csv_for_data(filename)`. The function takes in one parameter filename indicating the file name of the file you need to read in and should return the result in your own format. Designing a good scheme that could save you tons of time in the following tasks. The routines for reading in the CSV table from `filename` has been written for you. You are expected to implement rest part of this function all by yourself. The built-in library `csv` is not allowed in this homework.
 
 
 # Task 1: Who Flies More than 1500 Miles?
