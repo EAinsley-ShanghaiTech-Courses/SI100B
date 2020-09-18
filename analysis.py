@@ -34,11 +34,13 @@ def task1(filename: str):
     # Read in the data from the CSV file `filename` with tools you build in task 0.
     data = read_csv_for_data(filename)
     # Pick out the valid data
-    flight_list = list(map(lambda datum: (datum["AIRLINE"]+datum["FLIGHT_NUMBER"]), filter(
+    flight_list = list(map(lambda datum: (datum["AIRLINE"], datum["FLIGHT_NUMBER"], datum["DISTANCE"]), filter(
         lambda data: int(data["DISTANCE"]) > 1500, data)))
     # Hadling the format
-    flight_list.sort(reverse=True)
-    return list(flight_list)
+    flight_list.sort(key=lambda it: (int(it[2]), it[0] + it[1]))
+    final_list = list(map(lambda datum: datum[0] + datum[1],
+                          flight_list))
+    return final_list
     raise NotImplementedError
 
 
@@ -106,4 +108,5 @@ def task3(filename: str) -> List[Tuple[str, float]]:
 
 
 if __name__ == "__main__":
+    print(task1(r"data/sample.csv"))
     pass
