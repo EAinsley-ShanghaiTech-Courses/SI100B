@@ -99,8 +99,8 @@ def task3(filename: str) -> List[Tuple[str, float]]:
     airline_list = list(map(lambda dicts: (
         dicts[0], dicts[1][0]/dicts[1][1]), airline_dict.items()))
     # Sort the on-time rate
-    airline_list.sort(key=lambda it: it[1], reverse=True)
     airline_list.sort(key=lambda it: it[0])
+    airline_list.sort(key=lambda it: it[1], reverse=True)
     return list(airline_list)
     raise NotImplementedError
 
