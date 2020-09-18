@@ -36,7 +36,7 @@ def task1(filename: str):
     # Pick out the valid data
     flight_list = list(map(lambda datum: (datum["AIRLINE"], datum["FLIGHT_NUMBER"], datum["DISTANCE"]), filter(
         lambda data: int(data["DISTANCE"]) > 1500, data)))
-    # Hadling the format
+    # Handling the format
     flight_list.sort(key=lambda it: (int(it[2]), it[0] + it[1]))
     final_list = list(map(lambda datum: datum[0] + datum[1],
                           flight_list))
