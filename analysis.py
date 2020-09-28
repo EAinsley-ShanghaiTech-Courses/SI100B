@@ -26,14 +26,13 @@ def task1(filename: str):
     Args:
         filename: the file name of the data file.
 
-    Returns: 
+    Returns:
         A list of flight number strings.
     """
     data = read_csv_for_data(filename)
     # Pick out the valid data
-    flight_list = list(
-        map(lambda datum: (datum["AIRLINE"]+datum["FLIGHT_NUMBER"], datum["DISTANCE"]), filter(
-            lambda data: int(data["DISTANCE"]) > 1500, data)))
+    flight_list = [(x["AIRLINE"]+x["FLIGHT_NUMBER"], x["DISTANCE"]) for x in filter(
+        lambda data: int(data["DISTANCE"]) > 1500, data)]
     # Handling the format
     flight_list.sort(key=lambda it: (int(it[1]), it[0]))
     final_list = [x[0] for x in flight_list]
@@ -49,7 +48,7 @@ def task2(filename: str, airline: str, key: str, value) -> int:
         key: the key that we want to filter against.
         value: the value that we want to filter against.
 
-    Returns: 
+    Returns:
         The number of flights that satisfy as an integer.
     """
     # Try to convert string to integer
@@ -75,7 +74,7 @@ def task3(filename: str) -> List[Tuple[str, float]]:
     Args:
         filename: the file name of the data file.
 
-    Returns: 
+    Returns:
         A list of tuples with format of (airline, rate).
     """
     data = read_csv_for_data(filename)
@@ -89,8 +88,7 @@ def task3(filename: str) -> List[Tuple[str, float]]:
         finally:
             if datum["ARRIVAL_DELAY"][0] == "-":
                 airline_dict[datum["AIRLINE"]][0] += 1
-    airline_list = list(map(lambda dicts: (
-        dicts[0], dicts[1][0]/dicts[1][1]), airline_dict.items()))
+    airline_list = [(x[0], x[1][0]/x[1][1]) for x in airline_dict.items()]
     # Sort the on-time rate
     airline_list.sort(key=lambda it: it[0])
     airline_list.sort(key=lambda it: it[1], reverse=True)
