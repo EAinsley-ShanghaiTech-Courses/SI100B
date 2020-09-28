@@ -98,6 +98,4 @@ def task3(filename: str) -> List[Tuple[str, float]]:
 
 
 if __name__ == "__main__":
-    print(task1(r"data/sample.csv"))
-    print(task2(r"data/sample.csv", "AA", "TAIL_NUMBER", "NKUABa"))
     pass
