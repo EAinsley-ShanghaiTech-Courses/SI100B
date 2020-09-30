@@ -86,19 +86,20 @@ def task3(filename: str) -> List[Tuple[str, float]]:
     # Claculate on-time rate
     airline_dict = {}
     for datum in data:
-        try:
-            airline_dict[datum["AIRLINE"]][1] += 1
-        except KeyError:
+        if datum["AIRLINE"] not in airline_dict:
             airline_dict[datum["AIRLINE"]] = [0, 1]
-        finally:
-            if datum["ARRIVAL_DELAY"][0] == "-":
-                airline_dict[datum["AIRLINE"]][0] += 1
+        else:
+            airline_dict[datum["AIRLINE"]][1] += 1
+        if datum["ARRIVAL_DELAY"][0] == "-":
+            airline_dict[datum["AIRLINE"]][0] += 1
     airline_list = [(x[0], x[1][0] / x[1][1]) for x in airline_dict.items()]
     # Sort the on-time rate
-    airline_list.sort(key=lambda it: it[0])
-    airline_list.sort(key=lambda it: it[1], reverse=True)
+    airline_list = sorted(sorted(airline_list, key=lambda it: it[0]),
+                          key=lambda it: it[1],
+                          reverse=True)
     return list(airline_list)
 
 
 if __name__ == "__main__":
+    print(task3(r"data/sample.csv"))
     pass
