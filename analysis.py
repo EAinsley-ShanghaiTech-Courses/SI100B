@@ -90,8 +90,7 @@ def task3(filename: str) -> List[Tuple[str, float]]:
             airline_dict[datum["AIRLINE"]] = [0, 1]
         else:
             airline_dict[datum["AIRLINE"]][1] += 1
-        if datum["ARRIVAL_DELAY"][0] == "-":
-            airline_dict[datum["AIRLINE"]][0] += 1
+        airline_dict[datum["AIRLINE"]][0] += datum["ARRIVAL_DELAY"][0] == "-"
     airline_list = [(x[0], x[1][0] / x[1][1]) for x in airline_dict.items()]
     # Sort the on-time rate
     airline_list = sorted(sorted(airline_list, key=lambda it: it[0]),
@@ -101,5 +100,4 @@ def task3(filename: str) -> List[Tuple[str, float]]:
 
 
 if __name__ == "__main__":
-    print(task3(r"data/sample.csv"))
     pass
