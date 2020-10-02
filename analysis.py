@@ -13,10 +13,6 @@ class Error(Exception):
     pass
 
 
-class NullColumnError(Error):
-    pass
-
-
 class Row:
     """
     The `Row` class.
