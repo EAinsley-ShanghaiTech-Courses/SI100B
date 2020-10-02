@@ -295,7 +295,7 @@ More formally, we define the query as following:
 
   The `AVG` function will only be applied to the columns that support both arithmetic addition (`+`) and arithmetic division (`/`), which include all the columns **except** `AIRLINE`, `TAIL_NUMBER`, `ORIGIN_AIRPORT` and `DESTINATION_AIRPORT`. The `MAX` function can be applied to the any columns;
 
-* The `group_by` gives a column name as a string. you need to group up the rows with the same value in the  `group_by` column together and then use the aggregation functions (`AVG` or `MAX`) to calculate the aggregated value of  `column`  of the groups. 
+* The `group_by` gives a column name as a string. `group_by` indicates a column name. After filtering, the rows with the same value in the `group_by` column are put together into groups and your program should calculate an aggregated value for each group’s designated `column`, with the calculation indicated by the `function` argument (`AVG` or `MAX`).
 
 More specifically, the aggregation works the following way: First, you need to filter the data with the `condition` the same way as in task 1. Then group up the rows that is included in the result of last step by the `group_by` field and calculate the required value of the `column` field  with `function`. The corresponding column should be named as `${function} ${column}` (e.g.,`MAX DISTANCE`) in the result table. 
 
