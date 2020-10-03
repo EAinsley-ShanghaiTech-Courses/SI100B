@@ -1,8 +1,9 @@
 # SI 100B Homework 2: Flight Analytics
 
-- **Last Modified:** Oct 2, 2020
+- **Last Modified:** Oct 3, 2020
 - **Release Time:** Oct 2, 2020
 - **Deadline:** 23:59:00 China Standard Time, Oct 18, 2020
+- **Change Log**: See *Version History* Section
 
 ## Introduction
 
@@ -156,7 +157,7 @@ Your `Table()` class is expected to have the following methods:
 
   Argument `filename` is the path to the CSV file to read in, relative to your current working directory. The file will always be available in the file system.  You are allowed to design your own internal attributes as long as they are not accessible from outside.
 
-  Your `__init__()` should support two approaches to construct the `Table()` object. The first one is from a file. This approach should be applied when the third argument `row`s is set to None. You should read in the table from the CSV file specified by filename. All testcase files are guaranteed to be in the system, such that you do not need to worry about the file missing scenario. The second one is from multiple rows. This should be applied when `rows` is set to an iterable that contains a number of instances of the `Row()` object and `keys` is set to a non-empty list of keys in your table. In this case, you should construct your `Table(`) object from those rows and you are not supposed to read the file as specified by `filename`. These two arguments should be ignored if only one of them is presented.
+  Your `__init__()` should support two approaches to construct the `Table()` object. The first one is from a file. This approach should be applied when the third argument `row`s is set to None. You should read in the table from the CSV file specified by `filename`. All testcase files are guaranteed to be in the system, such that you do not need to worry about the file missing scenario. The second one is from multiple rows. This should be applied when `rows` is set to an iterable that contains a number of instances of the `Row()` object and `keys` is set to a non-empty list of keys in your table. In this case, you should construct your `Table(`) object from those rows and you are not supposed to read the file as specified by `filename`. These two arguments should be ignored if only one of them is presented.
 
   As you may have noticed, the data fields you read in from the CSV file are all strings. It is not convenient to use strings to perform some operations in the following tasks. So you should convert all fields into an integer except for AIRLINE,TAIL_NUMBER, ORIGIN_AIRPORT, and DESTINATION_AIRPORT fields. As we have performed such operations in class Row(), you do not need to do the conversion if you construct your table from multiple Row() objects;
   
@@ -166,7 +167,7 @@ Your `Table()` class is expected to have the following methods:
 
 * `__getitem__(self, id)`: Index the table by the id. This method should return the row object instance, whose the `ID` field matches `id`, as a `Row()` object. Raise `ValueError` if the table does not contain such a row. You are not expected to return a copy of the row since we want any modification on the row being reflected in the table (think about why);
 
-* `__iter__(self)`, `__next__(self)`: Implement an iterator on the table. Your iterator should return a Row() object each time the next() method is called on it.  It should loop over the rows inlexicographically ascending order of the ID field;
+* `__iter__(self)`, `__next__(self)`: Implement an iterator on the table. Your iterator should return a `Row()` object each time the `next()` method is called on it.  It should loop over the rows in acsending order of the `ID` field;
 
 * `__len__(self)`: Return the number of rows in the table;
 
@@ -278,7 +279,7 @@ query = {
 And when we call the `as_table()` function of above, your implementation should be able to return a `Table()` that exports to a CSV file like the following (different rows' ordering is acceptable).
 
 ```csv
-AIRLINE,ID,MAX(DISTANCE)
+AIRLINE,ID,MAX DISTANCE
 AA,0,1239
 SK,1,2431
 ```
@@ -308,6 +309,11 @@ In the `data` directory we provide you with some simple data and tests for you t
 To help your find out which part of your code may be wrong in hope to reduce the time consumption of you on this homework, each testcase will have a label indicating which task the testcase is focusing on. The label will be in the form of `m-n`. For example, the label `2-1` means this testcase is the 1st testcase aiming to test your implementation in task 2.
 
 Good luck!
+
+## Version History
+
+* Oct. 2: Initial Release
+* Oct. 3: Fix problems found before 15:00 CST Oct. 3. See [Piazza](https://piazza.com/class/keihltlrsa273?cid=157) for detail.
 
 ## Feedbacks
 
