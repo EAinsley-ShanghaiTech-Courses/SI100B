@@ -279,7 +279,7 @@ query = {
 And when we call the `as_table()` function of above, your implementation should be able to return a `Table()` that exports to a CSV file like the following (different rows' ordering is acceptable).
 
 ```csv
-AIRLINE,ID,MAX DISTANCE
+AIRLINE,ID,MAX(DISTANCE)
 AA,0,1239
 SK,1,2431
 ```
@@ -298,7 +298,7 @@ More formally, we define the query as following:
 
 * The `group_by` gives a column name as a string. `group_by` indicates a column name. After filtering, the rows with the same value in the `group_by` column are put together into groups and your program should calculate an aggregated value for each group’s designated `column`, with the calculation indicated by the `function` argument (`AVG` or `MAX`).
 
-More specifically, the aggregation works the following way: First, you need to filter the data with the `condition` the same way as in task 1. Then group up the rows that is included in the result of last step by the `group_by` field and calculate the required value of the `column` field  with `function`. The corresponding column should be named as `${function} ${column}` (e.g.,`MAX DISTANCE`) in the result table. 
+More specifically, the aggregation works the following way: First, you need to filter the data with the `condition` the same way as in task 1. Then group up the rows that is included in the result of last step by the `group_by` field and calculate the required value of the `column` field  with `function`. The corresponding column should be named as `${function}(${column})` (e.g.,`MAX(DISTANCE)`) in the result table. 
 
 The rows in the result table need an `ID` field since our `Table()` class uses it to distinguish different rows. However, there is no reasonable `ID` for the rows here after data aggregation, so you may assign an arbitrary unique `ID` for every row in the table. In other words, in your implementation, rows can be in any order.
 
@@ -313,7 +313,7 @@ Good luck!
 ## Version History
 
 * Oct. 2: Initial Release
-* Oct. 3: Fix problems found before 15:00 CST Oct. 3. See [Piazza](https://piazza.com/class/keihltlrsa273?cid=157) for detail.
+* Oct. 3: Fix problems found before 14:42 CST Oct. 3. See [Piazza](https://piazza.com/class/keihltlrsa273?cid=157) for detail.
 
 ## Feedbacks
 
