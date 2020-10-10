@@ -7,6 +7,8 @@
 #                         Last motified: 09/06/2020                           #
 # =============================================================================#
 
+import re
+
 
 class Error(Exception):
     """Base class for other exceptions"""
@@ -19,7 +21,6 @@ class Row:
 
     You are building the row class here.
     """
-
     def __init__(self, keys, data):
         if not isinstance(keys, list) or not isinstance(data, list):
             raise TypeError('`data` and `key` must be list.')
@@ -29,7 +30,9 @@ class Row:
             raise ValueError('Empty row.')
 
         self.__keys = keys
-        self.__data = [Row.__normalize_data(i, keys[data.index(i)]) for i in data]
+        self.__data = [
+            Row.__normalize_data(i, keys[data.index(i)]) for i in data
+        ]
         self.__id = self.__data[self.__keys.index('ID')]
         self.__sort_key()
 
@@ -73,13 +76,17 @@ class Row:
 
     @staticmethod
     def __normalize_data(data, key):
-        if key not in ["AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT", "DESTINATION_AIRPORT"]:
+        if key not in [
+                "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
+                "DESTINATION_AIRPORT"
+        ]:
+            if re.search('AVG\\([a-z_A-Z]+\\)', key):
+                return float(data)
             return int(data)
         return data
 
 
 class RowIter:
-
     def __init__(self, row):
         self.row = row
         self.idx = -1
@@ -100,54 +107,112 @@ class Table:
     from a CSV file and add the support of iterator to the table. See the
     specification in README.md for detailed information.
     """
-
     def __init__(self, filename, rows=None, keys=None):
-        # Your code here
-        pass
+        with open(filename) as f:
+            data = f.read()
+        # read from filename
+        if not rows or not keys:
+            list_data = [[ps.strip() for ps in s.split(",")]
+                         for s in data.splitlines() if s.strip() != ""]
+            self.__keys = list_data[0]
+            self.__content = [
+                Row(self.__keys, datum) for datum in list_data[1:]
+            ]
+        else:
+            self.__content = [datum for datum in rows]
+            self.__keys = keys
+        self.__keys.sort()
+        self.__filename = filename
 
     def __iter__(self):
-        # Your code here
-        pass
-
-    def __next__(self):
-        # Your code here
-        pass
+        # return an iterator.
+        return TableIter(self)
 
     def __getitem__(self, key):
-        # Your code here
-        pass
+        # return row object instance
+        for datum in self.__content:
+            if datum.get_id() == key:
+                return datum
+        raise ValueError('Does not contains id: {}'.format(key))
 
     def __len__(self):
-        # Your code here
-        pass
+        # return the number of rows
+        return len(self.__content)
 
     def keys(self):
-        # Your code here
-        pass
+        # return the keys in the Table()
+        return self.__keys.copy()
 
     def get_table_name(self):
-        # Your code here
-        pass
+        # return the table name of the table
+        return self.__filename
 
     def export(self, columns=None, filename=None):
         # Your code here
-        pass
+        if not filename:
+            filename = self.__filename
+        if not columns:
+            columns = self.__keys
+        else:
+            columns.sort()
+        with open(filename, "w") as f:
+            f.write(",".join(columns) + "\n")
+            for rows in self.__content:
+                selected_data = [str(rows[key]) for key in columns]
+                f.write(",".join(selected_data) + "\n")
+
+
+class TableIter:
+    def __init__(self, table):
+        self.__table = table
+        self.__idx = -1
+        self.__visited = 0
+
+    def __next__(self):
+        while True:
+            self.__idx += 1
+            try:
+                self.__visited += 1
+                return self.__table[self.__idx]
+            except ValueError:
+                self.__visited -= 1
+            if self.__visited >= len(self.__table):
+                raise StopIteration
 
 
 class Query:
     """
     The `Query` class.
     """
-
     def __init__(self, query):
         # Your code here
+        self.__condition = query["condition"]
+        self.__filename = query["filename"]
+        self.__table = Table(self.__filename)
+        self.__keys = self.__table.keys()
         pass
 
     def as_table(self):
-        # Your code here
-        pass
+        def convert(key, value):
+            if key not in [
+                    "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
+                    "DESTINATION_AIRPORT"
+            ]:
+                return value
+            return '\"' + value + '\"'
 
-    """ 
+        templete = 'x["{key}"] {operator} {value}'
+        final_table = self.__table
+        for filtcons in self.__condition:
+            filtcons["value"] = convert(filtcons["key"], filtcons["value"])
+            final_table = Table(
+                self.__filename,
+                rows=filter(lambda x: eval(templete.format(**filtcons)),
+                            final_table),
+                keys=self.__keys)
+        return final_table
+
+    """
     possible helpful function definition
     def _do_filter(self, cols, table, conds):
         # Your code here
@@ -157,22 +222,57 @@ class Query:
     def __do_cmp(row, key, var, op):
         # Your code here
         pass
+    """
 
     @staticmethod
-    def __normalize_data(data):
+    def __normalize_data(key, data):
         # Your code here
-        pass"""
+        if key in [
+                "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
+                "DESTINATION_AIRPORT"
+        ]:
+            return '\"' + data + '\"'
+        return data
 
 
 class AggQuery(Query):
     """
     The `AggQuery` class
     """
-
     def __init__(self, query):
         # Your code here
-        pass
+        self.__table = Query(query).as_table()
+        self.__column = query["column"]
+        self.__function = query["function"]
+        self.__group_by = query["group_by"]
+        self.__filename = query["filename"]
 
     def as_table(self):
+        dic = {}
+        for cols in self.__table:
+            if cols[self.__group_by] in dic:
+                dic[cols[self.__group_by]].append(cols[self.__column])
+            else:
+                dic[cols[self.__group_by]] = [cols[self.__column]]
+
+        keys = [
+            self.__group_by, "ID", "{}({})".format(self.__function,
+                                                   self.__column)
+        ]
+        results = []
+        ids = 0
+        for key, value in dic.items():
+            if self.__function == "MAX":
+                result = Row(keys, [key, ids, max(value)])
+                ids += 1
+            elif self.__function == "AVG":
+                result = Row(keys, [key, ids, sum(value) / len(value)])
+            results.append(result)
+        print(results)
+        return Table(self.__filename, rows=results, keys=keys)
         # Your code here
         pass
+
+
+if __name__ == "__main__":
+    pass
