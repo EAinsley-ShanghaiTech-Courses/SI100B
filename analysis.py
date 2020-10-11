@@ -114,7 +114,6 @@ class Table:
                 data = f.read()
             list_data = [[ps.strip() for ps in s.split(",")]
                          for s in data.splitlines() if s.strip() != ""]
-            del data
             if list_data != []:
                 self.__keys = list_data[0]
                 self.__content = [
