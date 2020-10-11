@@ -120,8 +120,9 @@ class Table:
             ]
         else:
             self.__content = [datum for datum in rows]
-            self.__keys = keys
+            self.__keys = [key for key in keys]
         self.__keys.sort()
+        self.__ids = [datum.get_id() for datum in self.__content]
         self.__filename = filename
 
     def __iter__(self):
@@ -130,10 +131,11 @@ class Table:
 
     def __getitem__(self, key):
         # return row object instance
-        for datum in self.__content:
-            if datum.get_id() == key:
-                return datum
-        raise ValueError('Does not contains id: {}'.format(key))
+        datum_idx = self.__ids.index(key)
+        if datum_idx > -1:
+            return self.__content[datum_idx]
+        else:
+            raise ValueError('Does not contains id: {}'.format(key))
 
     def __len__(self):
         # return the number of rows
@@ -147,6 +149,9 @@ class Table:
         # return the table name of the table
         return self.__filename
 
+    def get_ids(self):
+        return self.__ids
+
     def export(self, columns=None, filename=None):
         # Your code here
         if not filename:
@@ -156,8 +161,8 @@ class Table:
         else:
             columns.sort()
         with open(filename, "w") as f:
-            f.write(",".join(columns) + "\n")
-            for rows in self.__content:
+            f.write(",".join([str(col) for col in columns]) + "\n")
+            for rows in self:
                 selected_data = [str(rows[key]) for key in columns]
                 f.write(",".join(selected_data) + "\n")
 
@@ -165,19 +170,15 @@ class Table:
 class TableIter:
     def __init__(self, table):
         self.__table = table
+        self.__ids = table.get_ids()
         self.__idx = -1
-        self.__visited = 0
 
     def __next__(self):
-        while True:
-            self.__idx += 1
-            try:
-                self.__visited += 1
-                return self.__table[self.__idx]
-            except ValueError:
-                self.__visited -= 1
-            if self.__visited >= len(self.__table):
-                raise StopIteration
+        iter_seq = sorted(self.__ids.copy())
+        self.__idx += 1
+        if self.__idx >= len(self.__ids):
+            raise StopIteration
+        return self.__table[iter_seq[self.__idx]]
 
 
 class Query:
@@ -186,25 +187,15 @@ class Query:
     """
     def __init__(self, query):
         # Your code here
-        self.__condition = query["condition"]
+        self.__condition = self.__normalize_data(query["condition"])
         self.__filename = query["filename"]
         self.__table = Table(self.__filename)
         self.__keys = self.__table.keys()
-        pass
 
     def as_table(self):
-        def convert(key, value):
-            if key not in [
-                    "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
-                    "DESTINATION_AIRPORT"
-            ]:
-                return value
-            return '\"' + value + '\"'
-
-        templete = 'x["{key}"] {operator} {value}'
+        templete = 'x["{key}".strip()] {operator} {value}'
         final_table = self.__table
         for filtcons in self.__condition:
-            filtcons["value"] = convert(filtcons["key"], filtcons["value"])
             final_table = Table(
                 self.__filename,
                 rows=filter(lambda x: eval(templete.format(**filtcons)),
@@ -225,14 +216,21 @@ class Query:
     """
 
     @staticmethod
-    def __normalize_data(key, data):
-        # Your code here
-        if key in [
-                "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
-                "DESTINATION_AIRPORT"
-        ]:
-            return '\"' + data + '\"'
-        return data
+    def __normalize_data(data):
+        normed_data = []
+        for datum in data:
+            dic = {}
+            dic["key"] = datum["key"].strip()
+            if dic["key"] in [
+                    "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
+                    "DESTINATION_AIRPORT"
+            ]:
+                dic["value"] = "\'" + datum["value"] + "\'"
+            else:
+                dic["value"] = datum["value"]
+            dic["operator"] = datum["operator"].strip()
+            normed_data.append(dic)
+        return normed_data
 
 
 class AggQuery(Query):
@@ -264,14 +262,11 @@ class AggQuery(Query):
         for key, value in dic.items():
             if self.__function == "MAX":
                 result = Row(keys, [key, ids, max(value)])
-                ids += 1
             elif self.__function == "AVG":
                 result = Row(keys, [key, ids, sum(value) / len(value)])
             results.append(result)
-        print(results)
+            ids += 1
         return Table(self.__filename, rows=results, keys=keys)
-        # Your code here
-        pass
 
 
 if __name__ == "__main__":
