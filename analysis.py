@@ -190,7 +190,8 @@ class Query:
     The `Query` class.
     """
     def __init__(self, query):
-        self.__condition = query["condition"]
+        # Your code here
+        self.__condition = self.__normalize_data(query["condition"])
         self.__filename = query["filename"]
         self.__table = Table(self.__filename)
         self.__keys = self.__table.keys()
@@ -198,18 +199,35 @@ class Query:
     def as_table(self):
         final_table = self.__table
         for filtcons in self.__condition:
-            if filtcons["key"] not in [
+            try:
+                final_table = Table(
+                    self.__filename,
+                    rows=filter(
+                        lambda x: eval('x[filtcons["key"]] ' + filtcons[
+                            "operator"] + ' filtcons["value"]'), final_table),
+                    keys=self.__keys)
+            except KeyError:
+                raise KeyError('Wrong key in query')
+        return final_table
+
+    @staticmethod
+    def __normalize_data(data):
+        normed_data = []
+        for datum in data:
+            if datum["operator"] not in ["!=", "==", ">", ">=", "<", "<="]:
+                continue
+            dic = {}
+            dic["key"] = datum["key"].strip()
+            if dic["key"] not in [
                     "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
                     "DESTINATION_AIRPORT"
             ]:
-                filtcons["value"] = int(filtcons["value"])
-            final_table = Table(
-                self.__filename,
-                rows=filter(
-                    lambda x: eval('x[filtcons["key"]] ' + filtcons["operator"]
-                                   + ' filtcons["value"]'), final_table),
-                keys=self.__keys)
-        return final_table
+                dic["value"] = int(datum["value"])
+            else:
+                dic["value"] = datum["value"]
+            dic["operator"] = datum["operator"].strip()
+            normed_data.append(dic)
+        return normed_data
 
 
 class AggQuery(Query):
