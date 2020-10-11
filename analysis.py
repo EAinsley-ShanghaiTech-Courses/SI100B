@@ -108,22 +108,24 @@ class Table:
     specification in README.md for detailed information.
     """
     def __init__(self, filename, rows=None, keys=None):
-        with open(filename) as f:
-            data = f.read()
         # read from filename
         if rows is None or keys is None:
+            with open(filename) as f:
+                data = f.read()
             list_data = [[ps.strip() for ps in s.split(",")]
                          for s in data.splitlines() if s.strip() != ""]
+            del data
             if list_data != []:
                 self.__keys = list_data[0]
+                self.__content = [
+                    Row(self.__keys, datum) for datum in list_data[1:]
+                ]
             else:
                 self.__keys = []
-            self.__content = [
-                Row(self.__keys, datum) for datum in list_data[1:]
-            ]
+                self.__content = []
         else:
-            self.__content = [datum for datum in rows]
-            self.__keys = [key for key in keys]
+            self.__content = list(rows)
+            self.__keys = keys
         self.__keys.sort()
         self.__ids = [datum.get_id() for datum in self.__content]
         self.__filename = filename
@@ -153,7 +155,7 @@ class Table:
         return self.__filename
 
     def get_ids(self):
-        return self.__ids
+        return self.__ids.copy()
 
     def export(self, columns=None, filename=None):
         # Your code here
@@ -177,7 +179,7 @@ class TableIter:
         self.__idx = -1
 
     def __next__(self):
-        iter_seq = sorted(self.__ids.copy())
+        iter_seq = sorted(self.__ids)
         self.__idx += 1
         if self.__idx >= len(self.__ids):
             raise StopIteration
@@ -189,8 +191,7 @@ class Query:
     The `Query` class.
     """
     def __init__(self, query):
-        # Your code here
-        self.__condition = self.__normalize_data(query["condition"])
+        self.__condition = query["condition"]
         self.__filename = query["filename"]
         self.__table = Table(self.__filename)
         self.__keys = self.__table.keys()
@@ -198,35 +199,18 @@ class Query:
     def as_table(self):
         final_table = self.__table
         for filtcons in self.__condition:
-            try:
-                final_table = Table(
-                    self.__filename,
-                    rows=filter(
-                        lambda x: eval('x[filtcons["key"]] ' + filtcons[
-                            "operator"] + ' filtcons["value"]'), final_table),
-                    keys=self.__keys)
-            except KeyError:
-                raise KeyError('Wrong key in query')
-        return final_table
-
-    @staticmethod
-    def __normalize_data(data):
-        normed_data = []
-        for datum in data:
-            if datum["operator"] not in ["!=", "==", ">", ">=", "<", "<="]:
-                continue
-            dic = {}
-            dic["key"] = datum["key"].strip()
-            if dic["key"] not in [
+            if filtcons["key"] not in [
                     "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
                     "DESTINATION_AIRPORT"
             ]:
-                dic["value"] = int(datum["value"])
-            else:
-                dic["value"] = datum["value"]
-            dic["operator"] = datum["operator"].strip()
-            normed_data.append(dic)
-        return normed_data
+                filtcons["value"] = int(filtcons["value"])
+            final_table = Table(
+                self.__filename,
+                rows=filter(
+                    lambda x: eval('x[filtcons["key"]] ' + filtcons["operator"]
+                                   + ' filtcons["value"]'), final_table),
+                keys=self.__keys)
+        return final_table
 
 
 class AggQuery(Query):
