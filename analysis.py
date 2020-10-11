@@ -111,7 +111,7 @@ class Table:
         with open(filename) as f:
             data = f.read()
         # read from filename
-        if rows is None and keys is None:
+        if rows is None or keys is None:
             list_data = [[ps.strip() for ps in s.split(",")]
                          for s in data.splitlines() if s.strip() != ""]
             self.__keys = list_data[0]
