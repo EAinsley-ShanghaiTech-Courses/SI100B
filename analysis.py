@@ -111,7 +111,7 @@ class Table:
         with open(filename) as f:
             data = f.read()
         # read from filename
-        if not rows or not keys:
+        if rows is None and keys is None:
             list_data = [[ps.strip() for ps in s.split(",")]
                          for s in data.splitlines() if s.strip() != ""]
             self.__keys = list_data[0]
@@ -193,39 +193,32 @@ class Query:
         self.__keys = self.__table.keys()
 
     def as_table(self):
-        templete = 'x["{key}".strip()] {operator} {value}'
         final_table = self.__table
         for filtcons in self.__condition:
-            final_table = Table(
-                self.__filename,
-                rows=filter(lambda x: eval(templete.format(**filtcons)),
-                            final_table),
-                keys=self.__keys)
+            try:
+                final_table = Table(
+                    self.__filename,
+                    rows=filter(
+                        lambda x: eval('x[filtcons["key"]] ' + filtcons[
+                            "operator"] + ' filtcons["value"]'), final_table),
+                    keys=self.__keys)
+            except KeyError:
+                raise KeyError('Wrong key in query')
         return final_table
-
-    """
-    possible helpful function definition
-    def _do_filter(self, cols, table, conds):
-        # Your code here
-        pass
-
-    @staticmethod
-    def __do_cmp(row, key, var, op):
-        # Your code here
-        pass
-    """
 
     @staticmethod
     def __normalize_data(data):
         normed_data = []
         for datum in data:
+            if datum["operator"] not in ["!=", "==", ">", ">=", "<", "<="]:
+                continue
             dic = {}
             dic["key"] = datum["key"].strip()
-            if dic["key"] in [
+            if dic["key"] not in [
                     "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
                     "DESTINATION_AIRPORT"
             ]:
-                dic["value"] = "\'" + datum["value"] + "\'"
+                dic["value"] = int(datum["value"])
             else:
                 dic["value"] = datum["value"]
             dic["operator"] = datum["operator"].strip()
