@@ -99,22 +99,21 @@ class RowIter:
 
 
 class Table:
-    """
-    The `Table` class.
+    """The `Table` class.
 
     This class represents a table in your database. The table consists
-    of one or more lines of rows. Your job is to read the content of the table
-    from a CSV file and add the support of iterator to the table. See the
-    specification in README.md for detailed information.
+    of one or more lines of rows. `filename` must be given to specify the file
+    to read in. Build from given `rows` and `keys` if neither of two is `None`.
     """
     def __init__(self, filename, rows=None, keys=None):
         # read from filename
         if rows is None or keys is None:
             with open(filename) as f:
-                data = f.read()
-            list_data = [[ps.strip() for ps in s.split(",")]
-                         for s in data.splitlines() if s.strip() != ""]
-            if list_data != []:
+                data = f.readlines()
+            list_data = [[ps.strip() for ps in s.split(",")] for s in data
+                         if s.strip() != ""]
+            data = None
+            if list_data:
                 self.__keys = list_data[0]
                 self.__content = [
                     Row(self.__keys, datum) for datum in list_data[1:]
@@ -122,6 +121,7 @@ class Table:
             else:
                 self.__keys = []
                 self.__content = []
+        # read from rows and keys
         else:
             self.__content = list(rows)
             self.__keys = keys
@@ -130,8 +130,8 @@ class Table:
         self.__filename = filename
 
     def __iter__(self):
-        # return an iterator.
-        return TableIter(self)
+        # return TableIter.
+        return TableIter(self, self.__ids)
 
     def __getitem__(self, key):
         # return row object instance
@@ -153,11 +153,20 @@ class Table:
         # return the table name of the table
         return self.__filename
 
-    def get_ids(self):
-        return self.__ids.copy()
-
     def export(self, columns=None, filename=None):
-        # Your code here
+        """Export the Table to a file in terms of csv, sorted by ID.
+
+        Export to given file by `filename`. Export to original file of Table if
+        `filename` is None.
+        Export selected columns by `columns`. Export all columns if `columns`
+        is None.
+
+        Args:
+            columns: A list of string, representing the selected columns need
+                to be exported.
+            finename: A string represents the target file, in which to export
+                the Table.
+        """
         if not filename:
             filename = self.__filename
         if not columns:
@@ -172,26 +181,26 @@ class Table:
 
 
 class TableIter:
-    def __init__(self, table):
+    def __init__(self, table, ids):
         self.__table = table
-        self.__ids = table.get_ids()
-        self.__idx = -1
+        self.__ids = sorted(ids)
+        self.__index = -1
 
     def __next__(self):
-        iter_seq = sorted(self.__ids)
-        self.__idx += 1
-        if self.__idx >= len(self.__ids):
+        self.__index += 1
+        if self.__index >= len(self.__ids):
             raise StopIteration
-        return self.__table[iter_seq[self.__idx]]
+        return self.__table[self.__ids[self.__index]]
 
 
 class Query:
-    """
-    The `Query` class.
+    """The `Query` class.
+
+    Filter a Table by given query.
     """
     def __init__(self, query):
         # Your code here
-        self.__condition = self.__normalize_data(query["condition"])
+        self.__condition = query["condition"]
         self.__filename = query["filename"]
         self.__table = Table(self.__filename)
         self.__keys = self.__table.keys()
@@ -199,18 +208,21 @@ class Query:
     def as_table(self):
         final_table = self.__table
         for filtcons in self.__condition:
-            try:
-                final_table = Table(
-                    self.__filename,
-                    rows=filter(
-                        lambda x: eval('x[filtcons["key"]] ' + filtcons[
-                            "operator"] + ' filtcons["value"]'), final_table),
-                    keys=self.__keys)
-            except KeyError:
-                raise KeyError('Wrong key in query')
+            if filtcons["key"] not in [
+                    "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
+                    "DESTINATION_AIRPORT"
+            ]:
+                filtcons["value"] = int(filtcons["value"])
+            final_table = Table(
+                self.__filename,
+                rows=filter(
+                    lambda x: eval('x[filtcons["key"]] ' + filtcons["operator"]
+                                   + ' filtcons["value"]'), final_table),
+                keys=self.__keys)
         return final_table
 
-    @staticmethod
+
+"""    @staticmethod
     def __normalize_data(data):
         normed_data = []
         for datum in data:
@@ -228,6 +240,7 @@ class Query:
             dic["operator"] = datum["operator"].strip()
             normed_data.append(dic)
         return normed_data
+"""
 
 
 class AggQuery(Query):
@@ -267,4 +280,5 @@ class AggQuery(Query):
 
 
 if __name__ == "__main__":
+    print(Table(filename="data/sample.csv").export(filename="test1.csv"))
     pass
