@@ -30,25 +30,24 @@ class Row:
             raise ValueError('Empty row.')
 
         self.__keys = keys
-        self.__data = [
-            Row.__normalize_data(i, keys[data.index(i)]) for i in data
-        ]
-        self.__id = self.__data[self.__keys.index('ID')]
+        self.__data = {
+            k: Row.__normalize_data(d, k)
+            for d, k in zip(data, keys)
+        }
+        self.__id = self.__data['ID']
         self.__sort_key()
 
     def __getitem__(self, key):
         try:
-            idx = self.__keys.index(key)
-        except ValueError:
+            return self.__data[key]
+        except KeyError:
             raise KeyError('Key `{}` is not in this row'.format(key))
-        return self.__data[idx]
 
     def __setitem__(self, key, value):
-        try:
-            idx = self.__keys.index(key)
-        except ValueError:
+        if key not in self.__data:
             raise KeyError('Key `{}` is not in this row'.format(key))
-        self.__data[idx] = Row.__normalize_data(value, key)
+        else:
+            self.__data[key] = Row.__normalize_data(value, key)
 
     def __len__(self):
         return len(self.__keys)
@@ -57,7 +56,7 @@ class Row:
         if (not isinstance(other, Row)) or self.__keys != other.__keys:
             raise TypeError
 
-        return self.__getitem__('ID') < other.__getitem__("ID")
+        return self.get_id() < other.get_id()
 
     def keys(self):
         return self.__keys.copy()
@@ -69,10 +68,7 @@ class Row:
         return RowIter(self)
 
     def __sort_key(self):
-        orig_key = self.__keys
-        orig_data = self.__data
         self.__keys = sorted(self.__keys)
-        self.__data = [orig_data[orig_key.index(idx)] for idx in self.__keys]
 
     @staticmethod
     def __normalize_data(data, key):
@@ -93,7 +89,7 @@ class RowIter:
 
     def __next__(self):
         self.idx += 1
-        if self.idx >= len(self.row.keys()):
+        if self.idx >= len(self.row):
             raise StopIteration
         return self.row.keys()[self.idx]
 
@@ -225,6 +221,8 @@ class Query:
 
 class AggQuery(Query):
     """The `AggQuery` class
+
+    Convert an augemented query to Table.
     """
     def __init__(self, query):
         # Your code here
