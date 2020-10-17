@@ -196,7 +196,8 @@ class TableIter:
 class Query:
     """The `Query` class.
 
-    Filter a Table by given query.
+    Covert the query to a table which statisfy the condition in query.
+    Raise KeyError if the column requred by query not in the table.
     """
     def __init__(self, query):
         # Your code here
@@ -222,30 +223,8 @@ class Query:
         return final_table
 
 
-"""    @staticmethod
-    def __normalize_data(data):
-        normed_data = []
-        for datum in data:
-            if datum["operator"] not in ["!=", "==", ">", ">=", "<", "<="]:
-                continue
-            dic = {}
-            dic["key"] = datum["key"].strip()
-            if dic["key"] not in [
-                    "AIRLINE", "TAIL_NUMBER", "ORIGIN_AIRPORT",
-                    "DESTINATION_AIRPORT"
-            ]:
-                dic["value"] = int(datum["value"])
-            else:
-                dic["value"] = datum["value"]
-            dic["operator"] = datum["operator"].strip()
-            normed_data.append(dic)
-        return normed_data
-"""
-
-
 class AggQuery(Query):
-    """
-    The `AggQuery` class
+    """The `AggQuery` class
     """
     def __init__(self, query):
         # Your code here
@@ -267,15 +246,18 @@ class AggQuery(Query):
             self.__group_by, "ID", "{}({})".format(self.__function,
                                                    self.__column)
         ]
-        results = []
-        ids = 0
-        for key, value in dic.items():
-            if self.__function == "MAX":
-                result = Row(keys, [key, ids, max(value)])
-            elif self.__function == "AVG":
-                result = Row(keys, [key, ids, sum(value) / len(value)])
-            results.append(result)
-            ids += 1
+        if self.__function == "MAX":
+            results = [
+                Row(keys, [key, ids, max(value)])
+                for (ids, (key, value)) in enumerate(dic.items())
+            ]
+        elif self.__function == "AVG":
+            results = [
+                Row(keys, [key, ids, sum(value) / len(value)])
+                for (ids, (key, value)) in enumerate(dic.items())
+            ]
+        else:
+            raise ValueError("Unkown function")
         return Table(self.__filename, rows=results, keys=keys)
 
 
