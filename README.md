@@ -1,4 +1,4 @@
-# SI 100B Project: Who is Flying over?
+# SI 100B Project: Who is Flying over
 
 Welcome to the python programming project for SI 100B. In this project, you are going to build a web crawler that runs on a Raspberry Pi (a mini computer) to obtain real time flight data from a website called FlightRadar24 (or an alternative called FlightAware). You are going to control LED lights on an external circuit through the GPIO interface of your Raspberry Pi according to different scenarios and visualize your data analysis through graphs or a website. To be specific, you will build:
 
@@ -27,11 +27,11 @@ You should have received a batch of gears from the SI 100B teaching team. Please
 
 First, you need to connect your Raspberry Pi to the Internet through Wi-Fi or the Ethernet port on your board. First, turn on the switch on the charger and connect your Pi to it. Your Pi will be powered up automatically. The red LED indicator on the corner of the board near the USB connector will light up if your Pi is on. The green LED indicator next to it will blink if your Pi’s SD card has been accessed.
 
-After connecting your Pi to the network, you are going to figure out ways of extending I/O of your Pi. There are two ways of doing it. The first one is the simplest: you are directly connecting a monitor and a set of keyboard and mouse to it. The second one is to connect to it with SSH via network. The second approach is a little more complex but is recommended by the teaching team. We will give you bonus to your project if you choose the SSH way. Below are details for these two. 
+After connecting your Pi to the network, you are going to figure out ways of extending I/O of your Pi. There are two ways of doing it. The first one is the simplest: you are directly connecting a monitor and a set of keyboard and mouse to it. The second one is to connect to it with SSH via network. The second approach is a little more complex but is recommended by the teaching team. We will give you bonus to your project if you choose the SSH way. Below are details for these two.
 
 ### Connect with Keyboard and Mouse
 
-The Pi itself is a single board computer that runs Linux. To make it fully functional, all you need to do is attaching a screen and a set of keyboard and mouse to it. 
+The Pi itself is a single board computer that runs Linux. To make it fully functional, all you need to do is attaching a screen and a set of keyboard and mouse to it.
 
 The Pi comes with a HDMI port for connecting to your monitor and 4 USB ports for connecting with your mouse and keyboard. If you have compatible hardware, you can connect your Pi to them and use your Pi like what you will do with a normal computer. If you currently do not have them, you can choose to come to the computer lab in TBA. The hours of the lab will be announced on Piazza.
 
@@ -41,7 +41,7 @@ Alternatively, configuring your Pi with a SSH server and debugging on your own c
 
 ### Connect with an SSH Terminal
 
-If you do not have any USB keyboard, mouse or monitor, you may need to connect to the Pi via SSH.  SSH allows you to connect to your Pi from another computer securely in the same network. To enable SSH, simply follow the [instructions](https://www.raspberrypi.org/documentation/remote-access/ssh/) in the official documentation. If you have enabled SSH on your Pi, do remember to change your SSH login password. To change your password, simply run `passwd` on your terminal window after login. You may be prompted for your current password. If it is the case, the default password of your Pi is` raspberry`.
+If you do not have any USB keyboard, mouse or monitor, you may need to connect to the Pi via SSH.  SSH allows you to connect to your Pi from another computer securely in the same network. To enable SSH, simply follow the [instructions](https://www.raspberrypi.org/documentation/remote-access/ssh/) in the official documentation. If you have enabled SSH on your Pi, do remember to change your SSH login password. To change your password, simply run `passwd` on your terminal window after login. You may be prompted for your current password. If it is the case, the default password of your Pi is`raspberry`.
 
 To connect to your Pi via SSH, you also need an SSH client on your computer. If it is running macOS or Linux, your computer is shipped with an SSH client. If you are using Windows, you are recommended to use the [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10). To connect to your Pi in this way, you will need to connect your Pi to your laptop with the Ethernet. You will need an Ethernet dongle for this purpose if your laptop is not equipped with Ethernet ports.
 
@@ -74,7 +74,7 @@ The 4 parts are:
 - **[Part 3](./docs/README.part3.md)**: Build control panel;
 - **[Part 4](./docs/README.part4.md)**: Perform data visualization;
 
-The specification for each part is located in` docs` directory of this repo. Check them for detailed requirements for each step.
+The specification for each part is located in`docs` directory of this repo. Check them for detailed requirements for each step.
 
 This project (esp. the framework itself) is only supposed to work in a modern Linux system. During the face-to-face check, your project should only run on the Debian Linux on the Pi from the teaching team. During the face-to-face checking, demonstrating the project using other devices or OS is considered invalid and will face score deduction. However, you are highly encouraged to implement and debug it on your local system.
 
@@ -90,8 +90,8 @@ We have created a Group on GitLab for each team in which you can collaborate wit
 
 Submission of the project is on a per-team-basis. Your team need to submit the following every week in order to get full score:
 
-* A report describing the work you have done in this week as PDF to Gradescope. One submission from one student is sufficent for a team. When multiple submissions present, we will grade the latest one;
-* Your fully functional implementation of this week's task to GitLab by creating a new tag in **your team's** project codebase.
+- A report describing the work you have done in this week as PDF to Gradescope. One submission from one student is sufficent for a team. When multiple submissions present, we will grade the latest one;
+- Your fully functional implementation of this week's task to GitLab by creating a new tag in **your team's** project codebase.
 
 You also need to attend the face to face check arranged in the lecture time. The due date of your code and report and the time for check for each week is noted on the documentaion of each week in the `docs` directory of the codebase. The template of report is presented in the `reports` directory.
 
@@ -109,7 +109,7 @@ When you type in `https://sist.shanghaitech.edu.cn/` (a **URL**) in your browser
 
 HTTP, or the Hyper-text Transfer Protocol, is the underlying protocols used by web server and your web browsers to transfer data. In this part, we will describe **HTTP request** and **response** in detail - since this is important for your project.
 
-An **HTTP request** includes 
+An **HTTP request** includes
 
 - a request line - this includes how to forge a connection with the resource (a.k.a. **method**) including  `GET` and `POST` , which the resources you want to access (signatured by a **URL**), and the HTTP version;
 - **request header fields** - they are basically some key-value pairs indicating information of the request;
@@ -121,11 +121,11 @@ An **HTTP response** includes
 - response header fields - this is similar with that of an HTTP request but indicates response information;
 - and an optional message body - its form depends on the value of a key named `Content-Type` , which is specified in response's response header fields.
 
-An example of **HTTP request** / **response** is given below. 
+An example of **HTTP request** / **response** is given below.
 
 The client (user agent) sends out the following request
 
-```
+```bash
 GET / HTTP/1.1
 Host: www.example.com
 User-Agent: curl/7.54.0
@@ -133,7 +133,7 @@ User-Agent: curl/7.54.0
 
 The server will typically reply with the following
 
-```
+```bash
 HTTP/1.1 200 OK
 Server: nginx/1.14.2
 Date: Thu, 16 Jul 2020 12:42:13 GMT
@@ -159,7 +159,7 @@ HTTP solves the problem of transferring a file from a computer to another. HTML,
 
 For more information about the HTML, see [W3School](https://www.w3schools.com/whatis/whatis_html.asp) and [MDN](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics).
 
-### What is web crawling?
+### What is web crawling
 
 After having a general idea of what is mentioned above, it is a reasonable time for you to understand what a web crawling is and how it works.
 
@@ -167,7 +167,7 @@ Web crawling or scraping is the practice of gathering data through any means oth
 
 Specifically, for a general web crawler, it follows the following working pipeline:
 
-- retrieving HTML data from a domain name; 
+- retrieving HTML data from a domain name;
 - parsing that data for target information;
 - storing the target information;
 - Optionally, moving to another page to repeat the process.

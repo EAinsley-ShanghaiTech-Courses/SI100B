@@ -1,14 +1,15 @@
-#=============================================================================#
-#                               Web Project                                   #
-#       SI 100B: Introduction to Information Science and Technology           #
-#                       Fall 2020, ShanghaiTech University                    #
-#                     Author: Diao Zihao <hi@ericdiao.com>                    #
-#                         Last motified: 07/07/2020                           #
-#=============================================================================#
+# ============================================================================ #
+#                               Web Project                                    #
+#       SI 100B: Introduction to Information Science and Technology            #
+#                       Fall 2020, ShanghaiTech University                     #
+#                     Author: Diao Zihao <hi@ericdiao.com>                     #
+#                         Last motified: 07/07/2020                            #
+# ============================================================================ #
 import os
 
 
 def _main():
+    list
     '''
     Function `_main`:
 
@@ -33,11 +34,11 @@ def cli_start():
     # YOU ARE NOT SUPPOSED TO EDIT THE FUNCTION.
     #
     # This function is intended to provide a unified entrypoint for your CLI.
-    # You can treat this function as a black box. Being unable to
-    # know how the magic in this function works won't cause trouble to you finishing
-    # the project. If you feel the need to edit it, do it at your own risk.
-    # Understand every line of the file before proceed to editing. When in doubt,
-    # ask on Piazza.
+    # You can treat this function as a black box. Being unable to know how the
+    # magic in this function works won't cause trouble to you finishing the
+    # project. If you feel the need to edit it, do it at your own risk.
+    # Understand every line of the file before proceed to editing. When in
+    # doubt, ask on Piazza.
     pid = os.fork()
     if pid == 0:
         ppid = os.getppid()
