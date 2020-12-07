@@ -2,11 +2,11 @@
 
 ## Week 1 - due 10:00 a.m., December 11th 2020
 
-- [ ] 了解requests 或者 urllib3
-  - [ ] 如何 send an HTTP GET request
-  - [ ] 探究合法的URL
-  - [ ] 返回状态码的含义
-  - [ ] 如何获取相应的内容
+- [x] 了解requests 或者 urllib3
+  - [x] 如何 send an HTTP GET request - shz 12.7 21:40
+  - [x] 探究合法的URL - shz 12.7 23:02
+  - [x] 返回状态码的含义 - shz 12.7 23:02
+  - [x] 如何获取相应的内容 - shz 12.8 00:00
 - [ ] FlightRadar24
 - [ ] FlightAware（暂定）
   - [ ] URL requests 和 parameters 的作用
