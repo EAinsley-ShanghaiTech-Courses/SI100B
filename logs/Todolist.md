@@ -8,11 +8,11 @@
   - [x] 返回状态码的含义 - shz 12.7 23:02
   - [x] 如何获取相应的内容 - shz 12.8 00:00
 - [ ] FlightRadar24
-- [ ] FlightAware（暂定）
-  - [ ] URL requests 和 parameters 的作用
-  - [ ] 每个request是干什么
-  - [ ] response格式化
-  - [ ] 猜测每一个数据的意思
+- [x] FlightAware（暂定）
+  - [x] URL requests 和 parameters 的作用 - shz 12.8 14:08
+  - [x] 每个request用什么方法 - shz 12.8 14:08
+  - [x] response格式化 - shz 12.8 14:39
+  - [x] 猜测每一个数据的意思 - shz 12.8 14:39
 - [ ] 编写爬虫和处理数据
   - [ ] ```__init__```
   - [ ] ```get_data_once(s)```

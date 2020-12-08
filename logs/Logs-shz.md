@@ -108,9 +108,29 @@ requests.post(URL, DATA)
 - ```?``` + 查询（可选）
 - ```#``` + 片段
 
-### Answer to the doc
+### 如何爬FlightAware
 
-#### How to send an HTTP GET request to a URL
+因为需要token，发现html里面，id名为map的div里有一个参数叫data-token，可以试试这个参数。考虑爬取flightaware的html网页后，使用正则表达式匹配这个token。
+[正则表达式子手册](<https://tool.oschina.net/uploads/apidocs/jquery/regexp.html>)
+Token data-token后跟随的是诸如
+```两个字符-时间戳-我们需要的token```
+这种形式，所以可以写出正则表达式
+
+```python
+'data-token=\"[A-Za-z0-9]{2}-[0-9]*-([A-Za-z0-9]*)\"'
+```
+
+并不，然后爬出来500.
+重新检查token，从network里面筛选对.rvt发送的请求，复制里面的token，在html里面寻找，
+发现其实是跟在一个叫VICINITY_TOKEN的数据后面。修改表达式
+
+```python
+'\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
+```
+
+## Answer to the doc
+
+### How to send an HTTP GET request to a URL
 
 ```python
 import requests as rq
@@ -120,21 +140,73 @@ r2 = rq.get("https://man7.org/linux/man-pages/man1/pwd.1.html", timeout=5)
 print(r2)
 ```
 
-#### Which format of URL does the package accept
+### Which format of URL does the package accept
 
 参见合法的URL
 
-#### How to determine if the request is successful
+### How to determine if the request is successful
 
 参见 HTTP 状态码
 
-#### How to get the response body for a request
+### How to get the response body for a request
 
 ```python
 import requests as rq
 r3 = rq.get("https://tools.ietf.org/rfc/rfc2616.txt")
 print(r3.text)
 ```
+
+### Write down the URL of the requests and take a guess of what each part of the parameters means
+
+<https://flightaware.com/ajax/vicinity_aircraft.rvt>
+
+
+| Params | Meaning                 |
+| ------ | ----------------------- |
+| minLon | 最小的经度（Longitude） |
+| minLat | 最小的纬度（Latitude）  |
+| maxLon | 最大经度                |
+| maxLat | 最大纬度                |
+| token  | 验证码                  |
+
+### Determine what method is used for each request
+
+用GET
+
+### Determine the format of the response and find a way to parse it to a structured one that Python could understand
+
+通过requests 的 text属性观察到是json的格式
+使用requests的自带json()方法转换成dict。
+用key()看到dict一共有两个keys:feature 和 type.
+feature中的信息是需要的。其中一个数据示例：
+
+```python
+{'type': 'Feature',
+  'geometry': {'type': 'Point', 'coordinates': [113.01264, 24.36804]},
+  'properties': {'flight_id': 'GCR6468-1607228100-schedule-0273:0',
+   'prefix': 'GCR',
+   'direction': 282,
+   'type': 'A320',
+   'ident': 'GCR6468',
+   'icon': 'airliner',
+   'ga': False,
+   'landingTimes': {'estimated': '1607409960'},
+   'origin': {'icao': 'ZSQZ', 'iata': 'JJN', 'isUSAirport': False},
+   'destination': {'icao': 'ZUGY',
+    'iata': 'KWE',
+    'TZ': ':Asia/Shanghai',
+    'isUSAirport': False},
+   'prominence': 25916,
+   'flightType': 'airline',
+   'projected': 0,
+   'altitude': 341,
+   'altitudeChange': '-',
+   'groundspeed': 394}}
+   ```
+
+keys有着良好的命名规范，可以直接看出来是什么意思。
+不明白的：prominece，projected
+时间应该都是时间戳。
 
 ## References
 
@@ -172,6 +244,12 @@ print(r3.text)
 
 <https://en.wikipedia.org/wiki/URL#Syntax>
 
+<https://docs.python.org/zh-cn/3/library/re.html>
+
+<https://tool.oschina.net/uploads/apidocs/jquery/regexp.html>
+
 ## Package Used
 
 requests
+
+chrome 插件 - postman
