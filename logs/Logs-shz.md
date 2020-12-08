@@ -8,6 +8,7 @@ requests.get(URL)
 requests.post(URL, DATA)
 
 >HTTP GET 方法请求指定的资源。使用 GET 的请求应该只用于获取数据。
+>
 >| 请求是否有主体       | 否  |
 >| -------------------- | --- |
 >| 成功的响应是否有主体 | 是  |
@@ -81,6 +82,7 @@ requests.post(URL, DATA)
 ```<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>```
 >几乎没有哪个 URL 中包含了所有这些组件。URL 最重要的 3 个部分是方案（scheme）、主机（host）和路径（path）。表 2-1 对各种组件进行了总结。
 >表2-1　通用URL组件
+>
 >|组　　件 |描　　述 |默　认　值|
 >|---|---|---|
 >|方案 |访问服务器以获取资源时要使用哪种协议 |无|
@@ -137,21 +139,37 @@ print(r3.text)
 ## References
 
 <https://2.python-requests.org/zh_CN/latest/index.html>
+
 <https://www.runoob.com/note/35442>
+
 <https://www.runoob.com/http/http-status-codes.html>
+
 <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status>
+
 <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status/304>
+
 <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods>
+
 <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers>
+
 <https://developer.mozilla.org/zh-CN/docs/Glossary/%E9%80%9A%E7%94%A8%E9%A6%96%E9%83%A8>
+
 <https://developer.mozilla.org/en-US/docs/Glossary/entity_header>
+
 <https://developer.mozilla.org/zh-CN/docs/Glossary/%E8%AF%B7%E6%B1%82%E5%A4%B4>
+
 <https://developer.mozilla.org/zh-CN/docs/Glossary/Response_header>
+
 <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/GET>
+
 <https://zh.wikipedia.org/wiki/%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E6%A0%87%E5%BF%97%E7%AC%A6#.E4.B8.8EURL.E5.92.8CURN.E7.9A.84.E5.85.B3.E7.B3.BB>
+
 <https://blog.csdn.net/Godric42/article/details/26083303>
+
 <https://www.ituring.com.cn/book/miniarticle/44588>
+
 <https://developer.mozilla.org/zh-CN/docs/Learn/Common_questions/What_is_a_URL>
+
 <https://en.wikipedia.org/wiki/URL#Syntax>
 
 ## Package Used
