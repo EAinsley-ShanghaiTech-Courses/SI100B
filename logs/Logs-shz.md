@@ -160,7 +160,6 @@ print(r3.text)
 
 <https://flightaware.com/ajax/vicinity_aircraft.rvt>
 
-
 | Params | Meaning                 |
 | ------ | ----------------------- |
 | minLon | 最小的经度（Longitude） |
@@ -207,6 +206,8 @@ feature中的信息是需要的。其中一个数据示例：
 keys有着良好的命名规范，可以直接看出来是什么意思。
 不明白的：prominece，projected
 时间应该都是时间戳。
+
+缺了很多数据，可以切换到FlightRadar24，或者不管。
 
 ## References
 
