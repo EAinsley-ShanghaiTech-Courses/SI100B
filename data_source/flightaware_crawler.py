@@ -11,8 +11,14 @@ import re
 import time
 import requests as rq
 import json
-from pathlib import Path
+import os
+import platform
+
 # from typing import List, Dict, Any
+if platform.system() == 'Windows':
+    kDefaultPath = r"d:\pyton-crawler\data.json"
+else:
+    kDefaultPath = "/tmp/wif_crawler/data.json"
 
 
 class FlightAwareCrawler:
@@ -24,6 +30,7 @@ class FlightAwareCrawler:
         self.latitude_se, self.longitude_se = (x * 2 - y
                                                for x, y in zip(loc, rng))
         self.baddata = 0
+        self.saved_data = {}
 
     def get_data_once(self):
         def ExtractData(x):
@@ -91,26 +98,48 @@ class FlightAwareCrawler:
 
         return extract_data
 
-    def spin(self, interval=1):
-        retry_times = 0
-        while True:
+    def display_data(self, num):
+        os.system("clear")
+        for i, (k, v) in enumerate(self.saved_data.items()):
+            if i == num:
+                return
+            print(i + 1, ":")
+            for field_name, field_value in v.items():
+                print("  ", field_name, ":", field_value)
+
+    def spin(self,
+             interval=1,
+             max_loop=100,
+             filename=kDefaultPath,
+             save=True,
+             display=False,
+             display_num=5):
+        loop_count = 0
+        retry_time = 0
+        while max_loop is None or loop_count < max_loop:
             start_time = time.time()
-            saved_data = self.get_data_once()
-            retry_times += 1
-            print("bad data:", self.baddata)
-            print("airplane numbers:", len(saved_data))
-            self.baddata = 0
-            with open(path_to_save / "data.json", "w") as f:
-                json.dump(saved_data, f, indent=2)
-            time.sleep(max(interval - time.time() + start_time, 0))
-
-
-path_to_save = Path("./python-project/test/")
-
-kLatitude = 31.17940
-kLongitude = 121.59043
-a = FlightAwareCrawler((kLatitude, kLongitude),
-                       (kLatitude - 3, kLongitude - 3))
-# 31.17940N, 121.59043E
-
-a.spin(10)
+            try:
+                self.saved_data = self.get_data_once()
+            except rq.exceptions.Timeout:
+                if retry_time > 2:
+                    exit("Connection Failed")
+                print("timeout...retrying")
+                retry_time += 1
+            except rq.exceptions.ConnectionError:
+                if retry_time > 2:
+                    exit("Connection Failed")
+                print("unable to connect...retrying")
+                retry_time += 1
+            else:
+                retry_time = 0
+                if max_loop:
+                    loop_count += 1
+                if save:
+                    with open(filename, "w") as f:
+                        json.dump(self.saved_data, f, indent=2)
+                if display:
+                    self.display_data(display_num)
+                print("bad data:", self.baddata)
+                print("airplane numbers:", len(self.saved_data))
+                self.baddata = 0
+                time.sleep(max(interval - time.time() + start_time, 0))
