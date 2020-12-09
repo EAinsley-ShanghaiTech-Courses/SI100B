@@ -21,4 +21,4 @@ Please submit this report as a PDF file along with your code to receive full sco
 
 ### Implementation
 
-- What packages and modules did you use in this part to get flight data from FlightRadar24 or FlightAware server and parse the result? List them and describe the functionality of each of them in this project.
+- What packages and module s did you use in this part to get flight data from FlightRadar24 or FlightAware server and parse the result? List them and describe the functionality of each of them in this project.

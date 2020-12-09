@@ -201,7 +201,7 @@ feature中的信息是需要的。其中一个数据示例：
    'altitude': 341,
    'altitudeChange': '-',
    'groundspeed': 394}}
-   ```
+```
 
 keys有着良好的命名规范，可以直接看出来是什么意思。
 不明白的：prominece，projected
@@ -211,7 +211,7 @@ keys有着良好的命名规范，可以直接看出来是什么意思。
 
 ## References
 
-<https://2.python-requests.org/zh_CN/latest/index.html>
+[Requests: 让 HTTP 服务人类](<https://2.python-requests.org/zh_CN/latest/index.html>)
 
 <https://www.runoob.com/note/35442>
 
