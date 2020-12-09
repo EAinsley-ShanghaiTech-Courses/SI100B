@@ -7,6 +7,7 @@ save = False
 display = True
 display_num = 5
 filename = crl.kDefaultPath
+
 if __name__ == "__main__":
     import sys
     import getopt
@@ -38,7 +39,7 @@ if __name__ == "__main__":
                       "Default is 5 items")
                 sys.exit()
             if opt in ("-i", "--interval"):
-                interval = max(int(arg), 1)
+                interval = max(float(arg), 1)
             if opt in ("-s", "--saveto"):
                 save = True
                 filename = arg
@@ -53,18 +54,15 @@ if __name__ == "__main__":
         print("Inalid input. <time>, <loops> and <number> should be integers.")
         sys.exit()
 
-else:
-    filename = crl.kDefaultPath
-
 # 31.17940N, 121.59043E
 kLatitude = 31.17940
 kLongitude = 121.59043
-a = crl.FlightAwareCrawler((kLatitude, kLongitude),
-                           (kLatitude - 3, kLongitude - 3))
+shtech_crawler = crl.FlightAwareCrawler((kLatitude, kLongitude),
+                                        (kLatitude - 3, kLongitude - 3))
 
-a.spin(interval=interval,
-       max_loop=max_loop,
-       save=save,
-       filename=filename,
-       display=display,
-       display_num=display_num)
+shtech_crawler.spin(interval=interval,
+                    max_loop=max_loop,
+                    save=save,
+                    filename=filename,
+                    display=display,
+                    display_num=display_num)
