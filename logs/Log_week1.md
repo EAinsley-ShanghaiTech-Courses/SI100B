@@ -2,6 +2,8 @@
 
 ## SI100B Project Report - Crawler
 
+[TOC]
+
 ### Workload Division
 
 - 颜毅恒（yanyh1@shanghaitech.edu.cn）& 彭琬迪（pengwd@shanghaitech.edu.cn)：
@@ -14,7 +16,7 @@
 
 ### Preliminary Comments
 
-#### Solution
+#### Difficulties and Solutions
 
 We want to write a crawler to get the data from the website. First, we should understand how normal people or the browser get the information from the website.
 
@@ -200,6 +202,8 @@ First, take a look at the raw data:
 
 We can easily find that the useful information is in the "feature". ![截屏2020-12-10 下午4.24.45](/Users/sorano_akia/Library/Application Support/typora-user-images/截屏2020-12-10 下午4.24.45.png)
 
+<center> Fig.6 Type</center>
+
 The information are stored in a list of dictionaries. Here's an examplar of the data:
 
 ```python
@@ -243,9 +247,64 @@ We create a dictionary to store the data. The key is the 'flight_id' and the val
 
 However when we implment the data-selection part, we find that one query per time may not enough.
 
-##### Cross Antimeridian
+##### Cross the Antimeridian
 
 The website can only accept the query when minLat and minLon are smaller than maxLat and maxLon respectively (if not, the result would be the same as that case). So if the square area we ask has cross the antimeridian, we should seperate the query into two parts and merge the two query  results.
+
+##### Who's Flying over ShanghaiTech?
+
+Finally, we could combine all the parts together and write a program to get airplane information around ShanghaiTech using the class we wrote. The program will crawl the information every 10 seconds and display five data crawled. By default, The data will be stored in `/tmp/data.json` on Linux. The program can also accept customer settings using command lines.
+
+###### Usage
+
+Move to the projectf folder.
+
+For the first time use, you have to grant the program execute permission.
+
+```bash
+cd python-project/
+sudo chmod a+x shtech.py
+./shtech.py
+```
+
+You can use `-h` to check the help.
+
+```bash
+./shtech.py -h
+```
+
+Output:
+
+```
+orano_akia@kongyeqiuyadeMacBook-Pro python-project % ./shtech.py -h
+-i <time>, --interval=<time>
+  set an interval to crawl the website. The value would be set to 1 if the input time is less than 1. Default is 10.
+
+-s <filename>, --saveto=<filename>
+  Give a file to save the data, it should be a json file.Omitt the option indicates that the data will be stored in default file. (/tmp/data.json)
+
+-n, --nosave
+Ask the program not to save the data. Will override -s
+
+-m <loops>, --maxloop=<loops>
+  Give a number of loop times. If loops is less or equal to 0, then the program will loop infinite times.Default the times of looping is 5.
+
+-d <number>, --display=<number>
+  Give a number of items to display. If the number is less or equal to 0, then the data won't be diplayed. Default is 5 items
+```
+
+Another example of use:
+
+```bash
+./shtech.py -m 0 -d 2 -i 5 -n
+```
+
+This meanings that:
+
+- The program won't stop until being halted by the user.
+- Display 2 data each time
+- Crawl(update) the data at least 2s intervals
+- Don't save the data
 
 #### References
 
@@ -265,142 +324,82 @@ The website can only accept the query when minLat and minLon are smaller than ma
 
 [8] <a id="ref-8" href="https://tool.oschina.net/uploads/apidocs/jquery/regexp.html">正则表达式手册</a>
 
+[9] [HTTP 协议的 8 种请求类型](https://www.runoob.com/note/35442)
+
+[10] [HTTP Headers-HTTP|MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers)
+
+[11] [如何检查URL的合法性？ _Goldrick的杂记-CSDN博客](https://blog.csdn.net/Godric42/article/details/26083303)
+
+[12] [URL的语法-图灵社区](https://www.ituring.com.cn/book/miniarticle/44588)
+
+[13] [什么是URL？学习Web开发|MDN](https://developer.mozilla.org/zh-CN/docs/Learn/Common_questions/What_is_a_URL)
+
+[14] [re--正则表达式操作—Python 3.9.1文档](https://docs.python.org/zh-cn/3/library/re.html)
+
 ### Data Source
+
+#### URLs requested
+
+`https://flightaware.com/ajax/vicinity_aircraft.rvt?&minLon=5.2150726318359375&minLat=48.1640625&maxLon=35.15625&maxLat=90&token=9f5a4f7273d920a6a7f12e1fbdf1c9e0102878d4`
+
+The `https:` is the protocol or scheme, indicating which protocol should be used. Here we use HTTP protocol or the HyperText Transfer Protocol.
+
+`//flightaware.com` is a host. It will be resolved into address which points to the target server.
+
+`/ajax/vicinity_aircraft.rvt` is the path of target on the server. `.rvt` indicates it's a data file.
+
+`?minLon=5.2150726318359375&minLat=48.1640625&maxLon=35.15625&maxLat=90&token=9f5a4f7273d920a6a7f12e1fbdf1c9e0102878d4` is the query componet. It contains a query string which can be understand by the server to indicate what we are asking.
+
+The meaning of each parameters are:
+
+| Params | Meaning           |
+| ------ | ----------------- |
+| minLon | Minimal Longitude |
+| minLat | Minimal Latitude  |
+| maxLon | Maximal Longitude |
+| maxLat | Maximal Latitude  |
+| token  | token             |
+
+#### Responses
+
+The body of the responses  are json files.
+
+We can use `json()` method of the requests to convert the data into python dictionary class.
+
+```python
+converted_responces = responces.json()
+```
+
+The following is an example of the HTTP requests:
+
+![截屏2020-12-10 下午8.16.02](/Users/sorano_akia/Library/Application Support/typora-user-images/截屏2020-12-10 下午8.16.02.png)
+
+<center>Fig.7 HTTP responce</center>
+
+The first line is the status line, and the rest are headers.
+
+And following is a part of the respoonce body:
+
+![截屏2020-12-10 下午8.19.47](/Users/sorano_akia/Library/Application Support/typora-user-images/截屏2020-12-10 下午8.19.47.png)
+
+<center> Fig.8 Responce body</center>
+
+Most useful information are explained in the [Display the Information](#Display the Information). The titles of each data field are quite simple, so it is possible to understand the meaning of the data.
 
 ### Implementation
 
-- **How to send an HTTP GET request to a URL?**
+#### Package used
 
-  ```python
-  import requests as rq
-  r1 = rq.get("https://www.shanghaitech.edu.cn/", timeout=5)
-  r2 = rq.get("https://man7.org/linux/man-pages/man1/pwd.1.html", timeout=5)
-  ```
+- re - To use regex to find the tocken.
 
-- **Which format of URL does the package accept?**
+- time - To set intervals.
 
-  >大多数 URL 方案的 URL 语法都建立在这个由 9 部分构成的通用格式上：
+- requests - To send HTTP requests and parse the HTTP responces.
 
-  ```<scheme>://<user>:<password>@<host>:<port>/<path>;<params>?<query>#<frag>```
+- json - To save the python dictionary data in json file.
 
-  >几乎没有哪个 URL 中包含了所有这些组件。URL 最重要的 3 个部分是方案（scheme）、主机（host）和路径（path）。表 2-1 对各种组件进行了总结。
-  >表2-1　通用URL组件
-  >
-  >| 组　　件                                                     | 描　　述                                                     | 默　认　值     |
-  >| ------------------------------------------------------------ | ------------------------------------------------------------ | -------------- |
-  >| 方案                                                         | 访问服务器以获取资源时要使用哪种协议                         | 无             |
-  >| 用户                                                         | 某些方案访问资源时需要的用户名                               | 匿名           |
-  >| 密码                                                         | 用户名后面可能要包含的密码，中间由冒号（:）分隔              | \<E-mail地址\> |
-  >| 主机                                                         | 资源宿主服务器的主机名或点分IP地址                           | 无             |
-  >| 端口                                                         | 资源宿主服务器正在监听的端口号。很多方案都有默认端口号（HTTP的默认端口号为80） | 每个方案特有   |
-  >| 路径                                                         | 服务器上资源的本地名，由一个斜杠（/）将其与前面的URL组件分隔开来。路径组件的语法是与服务器和方案有关的（本章稍后会讲到URL路径可以分为若干个段，每段都可以有其特有的组件。） | 无             |
-  >| 参数                                                         | 某些方案会用这个组件来指定输入参数。参数为名/值对。URL中可以包含多个参数字段，它们相互之间以及与路径的其余部分之间用分号（;）分隔 | 无             |
-  >| 查询                                                         | 某些方案会用这个组件传递参数以激活应用程序（比如数据库、公告板、搜索引擎以及其他因特网网关）。查询组件的内容没有通用格式。用字符“?”将其与URL的其余部分分隔开来 | 无             |
-  >| 片段 一小片或一部分资源的名字。引用对象时，不会将frag字段传送给服务器；这个字段是在客户端内部使用的。通过字符“#”将其与URL的其余部分分隔开来 | 无                                                           |                |
+- os - To refresh the terminal before each output
+- platform - To check the user's system so that the file can be stored properly.
+- sys - To get command line parameters
+- getopt - To parse the command line parameters
 
-  语法:
-
-  - 不为空的协议名 + ```:```
-  - ```//``` + 主体名（可选）
-    - 用户信息 + ```@``` （可选）
-      - 用户名
-      - ```:``` + 密码（可选）
-    - 主机
-    - ```:``` + 端口号（可选）
-  - 路径
-  - ```?``` + 查询（可选）
-  - ```#``` + 片段
-
-- **How to determine if the request is successful?** 
-
-  >下面是常见的HTTP状态码：
-  >
-  >200 - 请求成功
-  >
-  >204 - 服务器处理成功，但无访问内容301 - 资源（网页等）被永久转移到其它URL
-  >
-  >304 - 访问内容没有修改，使用缓存资源。
-  >
-  >404 - 请求的资源（网页等）不存在
-  >500 - 内部服务器错误
-  >如果是 200 OK ，响应会带有头部 Cache-Control, Content-Location, Date, ETag, Expires，和 Vary.
-
-  成功：
-
-  >1. ▪ 200 OK
-  >2. ▪ 201 Created
-  >3. ▪ 202 Accepted
-  >4. ▪ 203 Non-Authoritative Information
-  >5. ▪ 204 No Content
-  >6. ▪ 205 Reset Content
-  >7. ▪ 206 Partial Content
-  >8. ▪ 207 Multi-Status
-
-  
-
-- **How to get the response body for a request?** 
-
-```python
-import requests as rq
-r3 = rq.get("https://tools.ietf.org/rfc/rfc2616.txt")
-print(r3.text)
-```
-
-FlightAware
-
-- **Write down the URL of the requests and take a guess of what each part of the parameters means.**
-
-  URL:<https://flightaware.com/ajax/vicinity_aircraft.rvt>
-
-  | Params | Meaning                 |
-  | ------ | ----------------------- |
-  | minLon | 最小的经度（Longitude） |
-  | minLat | 最小的纬度（Latitude）  |
-  | maxLon | 最大经度                |
-  | maxLat | 最大纬度                |
-  | token  | 验证码                  |
-
-- **Determine what method is used for each request.**
-
-  用get请求方式。
-
-- **Determine the format of the response and find a way to parse it to a structured one that Python could understand.**
-
-  【苏慧哲重新编辑】
-
-  通过requests 的 text属性观察到是json的格式
-  使用requests的自带json()方法转换成dict。
-  用key()看到dict一共有两个keys:feature 和 type.
-  feature中的信息是需要的。其中一个数据示例：
-
-  ```python
-  {'type': 'Feature',
-    'geometry': {'type': 'Point', 'coordinates': [113.01264, 24.36804]},
-    'properties': {'flight_id': 'GCR6468-1607228100-schedule-0273:0',
-     'prefix': 'GCR',
-     'direction': 282,
-     'type': 'A320',
-     'ident': 'GCR6468',
-     'icon': 'airliner',
-     'ga': False,
-     'landingTimes': {'estimated': '1607409960'},
-     'origin': {'icao': 'ZSQZ', 'iata': 'JJN', 'isUSAirport': False},
-     'destination': {'icao': 'ZUGY',
-      'iata': 'KWE',
-      'TZ': ':Asia/Shanghai',
-      'isUSAirport': False},
-     'prominence': 25916,
-     'flightType': 'airline',
-     'projected': 0,
-     'altitude': 341,
-     'altitudeChange': '-',
-     'groundspeed': 394}}
-  ```
-
-  keys有着良好的命名规范，可以直接看出来是什么意思。
-  不明白的：prominece，projected
-  时间应该都是时间戳。
-
-- **Determine the meaning of each field of the response.**
-
-  【苏慧哲重新编辑】
