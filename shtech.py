@@ -64,7 +64,7 @@ if __name__ == "__main__":
 kLatitude = 31.17940
 kLongitude = 121.59043
 shtech_crawler = crl.FlightAwareCrawler((kLatitude, kLongitude),
-                                        (kLatitude - 3, kLongitude - 3))
+                                        (kLatitude + 1.5, kLongitude - 1.5))
 
 shtech_crawler.spin(interval=interval,
                     max_loop=max_loop,

@@ -13,7 +13,7 @@ import os
 import platform
 
 if platform.system() == 'Windows':
-    kDefaultPath = r"d:\pyton-crawler\data.json"
+    kDefaultPath = r"d:\python-crawler\data.json"
 else:
     kDefaultPath = "/tmp/data.json"
 
@@ -53,10 +53,10 @@ class FlightAwareCrawler:
                                                for x, y in zip(loc, rng))
         self.baddata = 0
         self.token = None
-        self._update_token()
+        self.__update_token()
         self.saved_data = {}
 
-    def _update_token(self):
+    def __update_token(self):
         tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
         kHtmlURL = "https://flightaware.com/live/"
         html = rq.get(kHtmlURL, timeout=5)
@@ -81,7 +81,7 @@ class FlightAwareCrawler:
             'direction': 'heading',
             'altitude': 'altitude',
             'groundspeed': 'groundspeed',
-            'ident': 'filghtnumber'
+            'ident': 'flightnumber'
         }
         # Set the value to None, if the trivial information is lost
         for v, k in kMapping.items():
@@ -91,12 +91,12 @@ class FlightAwareCrawler:
                 data_dict[k] = None
         return data_dict
 
-    def _get_response(self, url, params={}) -> Dict:
+    def __get_response(self, url, params={}) -> Dict:
         response = rq.get(url, params=params, timeout=5)
         if response.status_code == 500:
-            self._update_token()
+            self.__update_token()
             params['token'] = self.token
-            return self._get_response(url, params)
+            return self.__get_response(url, params)
         return response.json()
 
     def get_data_once(self) -> Dict:
@@ -114,14 +114,14 @@ class FlightAwareCrawler:
             "maxLat": self.latitude_nw,
             "token": self.token
         }
-        response = self._get_response(kDataURL, params)
+        response = self.__get_response(kDataURL, params)
         query_data = response['features']
 
         # Cross the 180 longitude
         if self.longitude_se > 180:
             params["minLat"] = -180
             params["maxLat"] = self.longitude_se - 360
-            response = self._get_response(kDataURL, params)
+            response = self.__get_response(kDataURL, params)
             query_data.extend(response['features'])
 
         extract_data = {}
@@ -138,7 +138,10 @@ class FlightAwareCrawler:
 
     def __display_data(self, num):
         # Display <nums> pieces of the data
-        os.system("clear")
+        if platform.system() == "Windows":
+            os.system("cls")
+        else:
+            os.system("clear")
         for i, (k, v) in enumerate(self.saved_data.items()):
             if i == num:
                 return
