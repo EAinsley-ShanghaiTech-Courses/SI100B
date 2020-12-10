@@ -52,7 +52,16 @@ class FlightAwareCrawler:
         self.latitude_se, self.longitude_se = (x * 2 - y
                                                for x, y in zip(loc, rng))
         self.baddata = 0
+        self.token = None
+        self._update_token()
         self.saved_data = {}
+
+    def _update_token(self):
+        tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
+        kHtmlURL = "https://flightaware.com/live/"
+        html = rq.get(kHtmlURL, timeout=5)
+        token = re.search(tokenregx, html.text)
+        self.token = token.group(1)
 
     def __data_extract(self, x: Dict) -> Dict:
         # Extact needed data.
@@ -82,36 +91,40 @@ class FlightAwareCrawler:
                 data_dict[k] = None
         return data_dict
 
+    def _get_response(self, url, params={}) -> Dict:
+        response = rq.get(url, params=params, timeout=5)
+        if response.status_code == 500:
+            self._update_token()
+            params['token'] = self.token
+            return self._get_response(url, params)
+        return response.json()
+
     def get_data_once(self) -> Dict:
         """Crawl the data from the website once.
 
         Returns:
             A dictionary contains all needed data of the airline.
         """
-        tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
         kDataURL = "https://flightaware.com/ajax/vicinity_aircraft.rvt"
-        kHtmlURL = "https://flightaware.com/live/"
-        html = rq.get(kHtmlURL, timeout=5)
-        token = re.search(tokenregx, html.text)
 
         params = {
             "minLon": self.longitude_nw,
             "minLat": max(-90, self.latitude_se),
             "maxLon": min(180, self.longitude_se),
             "maxLat": self.latitude_nw,
-            "token": token.group(1)
+            "token": self.token
         }
-        query_data_raw = rq.get(kDataURL, params=params, timeout=5).json()
-        query_data = query_data_raw['features']
+        response = self._get_response(kDataURL, params)
+        query_data = response['features']
 
         # Cross the 180 longitude
         if self.longitude_se > 180:
             params["minLat"] = -180
             params["maxLat"] = self.longitude_se - 360
-            query_data_raw = rq.get(kDataURL, params=params, timeout=5).json()
-            query_data.extend(query_data_raw['features'])
-        extract_data = {}
+            response = self._get_response(kDataURL, params)
+            query_data.extend(response['features'])
 
+        extract_data = {}
         for i in query_data:
             key = i['properties']['flight_id']
             if key in extract_data:
@@ -181,5 +194,6 @@ class FlightAwareCrawler:
                     self.__display_data(display_num)
                 print("bad data:", self.baddata)
                 print("airplane numbers:", len(self.saved_data))
+                print("Now time:", time.asctime(time.localtime()))
                 self.baddata = 0
                 time.sleep(max(interval - time.time() + start_time, 0))

@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 save = True
                 filename = arg
             if opt in ("-m", "--maxloop"):
-                max_loop = None if int(arg) < 0 else int(arg)
+                max_loop = None if int(arg) <= 0 else int(arg)
             if opt in ("-d", "--display"):
                 display_num = int(arg)
                 if display_num <= 0:
