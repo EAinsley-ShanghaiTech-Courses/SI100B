@@ -15,7 +15,7 @@ import platform
 if platform.system() == 'Windows':
     kDefaultPath = r"d:\pyton-crawler\data.json"
 else:
-    kDefaultPath = "/tmp/wif_crawler/data.json"
+    kDefaultPath = "/tmp/data.json"
 
 
 class FlightAwareCrawler:
