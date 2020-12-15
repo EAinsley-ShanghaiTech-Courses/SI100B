@@ -19,16 +19,17 @@ class State:
                 data = json.load(f)
             num = len(data)
             self.__controller.work_once(num)
-            time.sleep(max(interval - time.time + start_time, 0))
+            time.sleep(max(interval - time.time() + start_time, 0))
             loop_count += 1
 
 
 if __name__ == '__main__':
     kLatitude = 31.17940
     kLongitude = 121.59043
+    crl = FlightAwareCrawler((kLatitude, kLongitude),
+                            (kLatitude + 0.25, kLongitude - 0.25))
+    state = State()
+
     for i in range(5):
-        crl = FlightAwareCrawler((kLatitude, kLongitude),
-                                 (kLatitude + 0.25, kLongitude - 0.25))
         crl.spin(max_loop=1)
-        state = State()
         state.spin(max_loop=1)

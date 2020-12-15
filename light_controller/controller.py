@@ -10,13 +10,16 @@ from gpiozero import PWMLED
 
 class BaseController:
     def __init__(self):
-        self.digit[4] = [
-            PWMLED(i, initial_value=0, frequency=120) for i in range(14, 18)
+        kStich = [26, 19,12, 5]
+        self.digit = [
+            PWMLED(i, initial_value=0, frequency=120) for i in kStich
         ]
 
     def work_once(self, num):
         print("NUM:", num)
-        num = max(num, 16)
+        num = min(num, 15)
         for i in range(4):
+            print(num)
             self.digit[i].value = num % 2
+            print(i, ":", self.digit[i].value)
             num //= 2
