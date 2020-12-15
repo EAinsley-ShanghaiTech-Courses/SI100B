@@ -18,7 +18,6 @@ class BaseController:
 
     def work_once(self, num):
         print("NUM:", num)
-        num = min(num, 15)
         if num == 0:
             for i in range(3):
                 self.__digit[0].value = self.__digit[1].value = 1
@@ -33,7 +32,5 @@ class BaseController:
                 sleep(0.2)
         else:
             for i in range(4):
-                print(num)
                 self.__digit[i].value = num % 2
-                print(i, ":", self.__digit[i].value)
                 num //= 2
