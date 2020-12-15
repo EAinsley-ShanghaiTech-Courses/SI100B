@@ -11,9 +11,9 @@ class State:
         self.__controller = BaseController()
 
     def spin(self, interval=2, max_loop=None):
-        start_time = time.time()
         loop_count = 0
         while max_loop is None or loop_count < max_loop:
+            start_time = time.time()
             print("Loading data...")
             with open(self.__file) as f:
                 data = json.load(f)
