@@ -2,6 +2,7 @@
 
 Dpendencies:
     requests
+
 """
 
 from typing import Tuple, Dict, Union
@@ -47,21 +48,40 @@ class FlightAwareCrawler:
     def __init__(self,
                  loc: Tuple[float, float] = (0.0, 0.0),
                  rng: Tuple[float, float] = (0.0, 0.0)):
-        self.latitude_center, self.longitude_center = loc
-        self.latitude_nw, self.longitude_nw = rng
-        self.latitude_se, self.longitude_se = (x * 2 - y
-                                               for x, y in zip(loc, rng))
+        self.__latitude_center, self.__longitude_center = loc
+        self.__latitude_nw, self.__longitude_nw = rng
+        self.__latitude_se, self.__longitude_se = (x * 2 - y
+                                                   for x, y in zip(loc, rng))
         self.baddata = 0
-        self.token = None
+        self.__token = None
         self.__update_token()
-        self.saved_data = {}
+        self.__saved_data = {}
+        self.__plane_num = None
+
+    @property
+    def location(self):
+        return [self.__latitude_center, self.__longitude_center]
+
+    @property
+    def plane_number(self):
+        return self.__plane_num
+
+    @location.setter
+    def location(self, loc: Tuple[float, float]):
+        move_lat = loc[0] - self.__latitude_center
+        move_lon = loc[1] - self.__longitude_center
+        self.__latitude_center, self.__longitude_center = loc
+        self.__latitude_nw += move_lat
+        self.__latitude_se += move_lat
+        self.__longitude_nw += move_lon
+        self.__longitude_se += move_lon
 
     def __update_token(self):
         tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
         kHtmlURL = "https://flightaware.com/live/"
         html = rq.get(kHtmlURL, timeout=5)
         token = re.search(tokenregx, html.text)
-        self.token = token.group(1)
+        self.__token = token.group(1)
 
     def __data_extract(self, x: Dict) -> Dict:
         # Extact needed data.
@@ -95,7 +115,7 @@ class FlightAwareCrawler:
         response = rq.get(url, params=params, timeout=5)
         if response.status_code == 500:
             self.__update_token()
-            params['token'] = self.token
+            params['token'] = self.__token
             return self.__get_response(url, params)
         return response.json()
 
@@ -108,19 +128,19 @@ class FlightAwareCrawler:
         kDataURL = "https://flightaware.com/ajax/vicinity_aircraft.rvt"
 
         params = {
-            "minLon": self.longitude_nw,
-            "minLat": max(-90, self.latitude_se),
-            "maxLon": min(180, self.longitude_se),
-            "maxLat": self.latitude_nw,
-            "token": self.token
+            "minLon": self.__longitude_nw,
+            "minLat": max(-90, self.__latitude_se),
+            "maxLon": min(180, self.__longitude_se),
+            "maxLat": self.__latitude_nw,
+            "token": self.__token
         }
         response = self.__get_response(kDataURL, params)
         query_data = response['features']
 
         # Cross the 180 longitude
-        if self.longitude_se > 180:
+        if self.__longitude_se > 180:
             params["minLat"] = -180
-            params["maxLat"] = self.longitude_se - 360
+            params["maxLat"] = self.__longitude_se - 360
             response = self.__get_response(kDataURL, params)
             query_data.extend(response['features'])
 
@@ -134,15 +154,18 @@ class FlightAwareCrawler:
                 continue
             extract_data[key] = extract_datum
 
+        self.__plane_num = len(extract_data)
+
         return extract_data
 
+    # TODO: Need improvement, remove self.__daved_data
     def __display_data(self, num):
         # Display <nums> pieces of the data
         if platform.system() == "Windows":
             os.system("cls")
         else:
             os.system("clear")
-        for i, (k, v) in enumerate(self.saved_data.items()):
+        for i, (k, v) in enumerate(self.__saved_data.items()):
             if i == num:
                 return
             print(i + 1, ":")
@@ -175,7 +198,7 @@ class FlightAwareCrawler:
             start_time = time.time()
             # Handle connections
             try:
-                self.saved_data = self.get_data_once()
+                self.__saved_data = self.get_data_once()
             except rq.exceptions.Timeout:
                 if retry_time > 2:
                     exit("Connection Failed")
@@ -192,11 +215,11 @@ class FlightAwareCrawler:
                     loop_count += 1
                 if save:
                     with open(filename, "w") as f:
-                        json.dump(self.saved_data, f, indent=2)
+                        json.dump(self.__saved_data, f, indent=2)
                 if display:
                     self.__display_data(display_num)
                 print("bad data:", self.baddata)
-                print("airplane numbers:", len(self.saved_data))
+                print("airplane numbers:", self.__plane_num)
                 print("Now time:", time.asctime(time.localtime()))
                 self.baddata = 0
                 time.sleep(max(interval - time.time() + start_time, 0))
