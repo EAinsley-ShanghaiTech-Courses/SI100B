@@ -5,5 +5,3 @@ from time import sleep
 controller = BaseController()
 controller.work_once(int(sys.argv[1]))
 sleep(2)
-
-
