@@ -10,7 +10,7 @@ class State:
         self.__file = filename
         self.__controller = BaseController()
 
-    def spin(self, interval=1, max_loop=None):
+    def spin(self, interval=2, max_loop=None):
         start_time = time.time()
         loop_count = 0
         while max_loop is None or loop_count < max_loop:
@@ -24,12 +24,16 @@ class State:
 
 
 if __name__ == '__main__':
-    kLatitude = 31.17940
-    kLongitude = 121.59043
+    import sys
+    if len(sys.argv) > 1:
+        kLatitude = float(sys.argv[1])
+        kLongitude = float(sys.argv[2])
+    else:
+        kLatitude = 31.17940
+        kLongitude = 121.59043
     crl = FlightAwareCrawler((kLatitude, kLongitude),
-                            (kLatitude + 0.25, kLongitude - 0.25))
+                             (kLatitude + 0.25, kLongitude - 0.25))
     state = State()
-
     for i in range(5):
         crl.spin(max_loop=1)
         state.spin(max_loop=1)
