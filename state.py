@@ -32,7 +32,7 @@ if __name__ == '__main__':
         kLatitude = 31.17940
         kLongitude = 121.59043
     crl = FlightAwareCrawler((kLatitude, kLongitude),
-                             (kLatitude + 0.25, kLongitude - 0.25))
+                             (kLatitude + 0.35, kLongitude - 0.35))
     state = State()
     for i in range(5):
         crl.spin(max_loop=1)
