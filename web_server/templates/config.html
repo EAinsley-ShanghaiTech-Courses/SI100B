@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<title>Config - Who is Flying </title>
+<h1>Settings</h1>
+<form action="{{url_for('config')}}" method="post">
+  <div>
+    <label for="center">Central coordinate:</label>
+    <input type="text" id="central"> 
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div class="button">
+    <button type="submit">Send your message</button>
+  </div>
+</form>
+<a href = "{{url_for('vis')}}">Submit</a>

@@ -6,25 +6,27 @@
 #                          Last motified: 07/07/2020                           #
 # ============================================================================ #
 from flask import Flask
-# form flask import request, render_template
-
+from flask import render_template
+from flask import request
 web_server = Flask(__name__)
 web_server.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 @web_server.route('/')
 def home():
-    raise NotImplementedError
+    return render_template("home.html")
 
 
 @web_server.route('/config', methods=['GET', 'POST'])
 def config():
-    raise NotImplementedError
+    if request.method == 'POST':
+        return vis()
+    return render_template("config.html")
 
 
 @web_server.route('/vis', methods=['GET'])
 def vis():
-    raise NotImplementedError
+    return render_template("vis.html")
 
 
 if __name__ == "__main__":
