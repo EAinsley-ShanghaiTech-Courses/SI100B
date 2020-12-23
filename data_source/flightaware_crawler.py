@@ -53,6 +53,7 @@ class FlightAwareCrawler:
         self.__latitude_se, self.__longitude_se = (x * 2 - y
                                                    for x, y in zip(loc, rng))
         self.baddata = 0
+        self.__interval = 10
         self.__token = None
         self.__update_token()
         self.__saved_data = {}
@@ -75,6 +76,18 @@ class FlightAwareCrawler:
         self.__latitude_se += move_lat
         self.__longitude_nw += move_lon
         self.__longitude_se += move_lon
+
+    def __upgrade_setting(self):
+        with open('/tmp/config.json') as f:
+            settings = json.load(f)
+        self.__latitude_center = max(min(int(settings['center_lat']), 90), -90)
+        self.__longitude_center = max(min(int(settings['center_lon']), 180),
+                                      -180)
+        self.__latitude_nw = max(min(int(settings['corner_lat']), 90), -90)
+        self.__longitude_nw = max(min(int(settings['corner_lon']), 180), -180)
+        self.__latitude_se = 2 * self.__latitude_center - self.__latitude_nw
+        self.__longitude_se = 2 * self.__longitude_center - self.__longitude_nw
+        self.__interval = max(min(int(settings['interval']), 3600), 0)
 
     def __update_token(self):
         tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
@@ -174,7 +187,7 @@ class FlightAwareCrawler:
 
     def spin(self,
              interval: float = 1.0,
-             max_loop: Union[int, None] = 100,
+             max_loop: Union[int, None] = None,
              filename: str = kDefaultPath,
              save: bool = True,
              display: bool = False,
@@ -192,6 +205,7 @@ class FlightAwareCrawler:
             display(bool): Display the data on the screen if it's True.
             display_num(int): The number of the data to display.
         """
+        self.__interval = interval
         loop_count = 0
         retry_time = 0
         while max_loop is None or loop_count < max_loop:
@@ -222,4 +236,5 @@ class FlightAwareCrawler:
                 print("airplane numbers:", self.__plane_num)
                 print("Now time:", time.asctime(time.localtime()))
                 self.baddata = 0
-                time.sleep(max(interval - time.time() + start_time, 0))
+                self.__upgrade_setting()
+                time.sleep(max(self.__interval - time.time() + start_time, 0))
