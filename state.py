@@ -13,20 +13,20 @@ class State:
     def __select_data(self, data, config):
         selected = {}
         if config['func'] == 'more than':
-            selected = filter(lambda x: x[config['field']] > config['value'],
-                              data)
+            selected = filter(
+                lambda x: data[x][config['field']] > config['value'], data)
         elif config['func'] == 'more than or equal to':
-            selected = filter(lambda x: x[config['field']] >= config['value'],
-                              data)
+            selected = filter(
+                lambda x: data[x][config['field']] >= config['value'], data)
         elif config['func'] == 'equal to':
-            selected = filter(lambda x: x[config['field']] == config['value'],
-                              data)
+            selected = filter(
+                lambda x: data[x][config['field']] == config['value'], data)
         elif config['func'] == 'less than':
-            selected = filter(lambda x: x[config['field']] < config['value'],
-                              data)
+            selected = filter(
+                lambda x: data[x][config['field']] < config['value'], data)
         else:
-            selected = filter(lambda x: x[config['field']] <= config['value'],
-                              data)
+            selected = filter(
+                lambda x: data[x][config['field']] <= config['value'], data)
 
         return list(selected)
 
