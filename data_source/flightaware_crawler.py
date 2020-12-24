@@ -80,13 +80,13 @@ class FlightAwareCrawler:
     def __update_setting(self):
         with open('/tmp/config.json') as f:
             settings = json.load(f)
-        self.__latitude_center = settings['center_lat']
-        self.__longitude_center = settings['center_lon']
-        self.__latitude_nw = settings['corner_lat']
-        self.__longitude_nw = settings['corner_lon']
+        self.__latitude_center = int(settings['center_lat'])
+        self.__longitude_center = int(settings['center_lon'])
+        self.__latitude_nw = int(settings['corner_lat'])
+        self.__longitude_nw = int(settings['corner_lon'])
         self.__latitude_se = 2 * self.__latitude_center - self.__latitude_nw
         self.__longitude_se = 2 * self.__longitude_center - self.__longitude_nw
-        self.__interval = settings['interval']
+        self.__interval = int(settings['interval'])
 
     def __update_token(self):
         tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'

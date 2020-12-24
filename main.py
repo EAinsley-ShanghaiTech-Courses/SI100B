@@ -65,7 +65,7 @@ if __name__ == "__main__":
         ppid = os.getppid()
         try:
             if flag == '--web':
-                web_server.run(host="0.0.0.0", port=4444)
+                web_server.run(host="127.0.0.1", port=5000)
             elif flag == '--cli':
                 cli_start()
         except KeyboardInterrupt:

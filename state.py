@@ -12,23 +12,26 @@ class State:
 
     def __select_data(self, data, config):
         selected = {}
-        if config['func'] == 'more than':
-            selected = filter(
-                lambda x: data[x][config['field']] > config['value'], data)
-        elif config['func'] == 'more than or equal to':
-            selected = filter(
-                lambda x: data[x][config['field']] >= config['value'], data)
-        elif config['func'] == 'equal to':
-            selected = filter(
-                lambda x: data[x][config['field']] == config['value'], data)
-        elif config['func'] == 'less than':
-            selected = filter(
-                lambda x: data[x][config['field']] < config['value'], data)
-        else:
-            selected = filter(
-                lambda x: data[x][config['field']] <= config['value'], data)
+        for k, v in data.items():
+            if not v[config['field']]:
+                continue
+            elif config['func'] == 'more than':
+                if v[config['field']] > int(config['value']):
+                    selected[k] = v
+            elif config['func'] == 'more than or equal to':
+                if v[config['field']] >= int(config['value']):
+                    selected[k] = v
+            elif config['func'] == 'equal to':
+                if v[config['field']] == int(config['value']):
+                    selected[k] = v
+            elif config['func'] == 'less than':
+                if v[config['field']] < int(config['value']):
+                    selected[k] = v
+            else:
+                if v[config['field']] <= int(config['value']):
+                    selected[k] = v
 
-        return list(selected)
+        return selected
 
     def spin(self, interval=2, max_loop=None):
         loop_count = 0
