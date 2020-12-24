@@ -41,7 +41,7 @@ Please submit this report as a PDF file along with your code to receive full sco
 
 The picture of Pi is as follows:
 
-![pi pic](C:\Users\lenovo\Desktop\pi pic.png)
+![pi pic](D:\a_Shanghaitech\SI100B\Python project\python-project\logs\pi pic.png)
 
 #### Class for LED control & How to determine which LED to control
 
