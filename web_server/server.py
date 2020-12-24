@@ -15,22 +15,34 @@ web_server.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 def dump_config(data):
-    kKeys = {
+    kEmpt = {
         'center_lat': 31.1790,
         'center_lon': 121.59043,
         'corner_lat': 32.67940,
         'corner_lon': 120.09043,
-        'interval': 10
+        'interval': 10,
+        'value': 100
     }
     config = {}
+    for k, v in kEmpt.items():
+        if not data[k]:
+            config[k] = v
+        else:
+            config[k] = int(data[k])
     for k, v in data.items():
         if not v:
-            config[k] = kKeys[k]
-        elif k + '_sign' in data:
-            if data[k + '_sign'] == 'W' or 'S':
-                config[k] = -int(v)
+            config[k] = kEmpt[k]
         else:
-            config[k] = v
+            if k in ['center_lon', 'corner_lon']:
+                config[k] = min(max(int(v), 0), 180)
+                if data[k + '_sign'] == 'W':
+                    config[k] = -config[k]
+            elif k in ['center_lat', 'corner_lat']:
+                config[k] = min(max(int(v), 0), 90)
+                if data[k + '_sign'] == 'S':
+                    config[k] = -config[k]
+            else:
+                config[k] = v
     with open('/tmp/config.json', 'w') as f:
         json.dump(config, f)
 
