@@ -43,10 +43,15 @@ def _help():
 if __name__ == "__main__":
     logger = logging.getLogger("si100b_proj:main")
     logger.setLevel("INFO")
-    with open('/tmp/data.json','w') as f:
+    with open('/tmp/data.json', 'w') as f:
         f.write('{}')
-    with open('/tmp/config.json','w') as f:
-        f.write('{}')
+    with open('/tmp/config.json', 'w') as f:
+        f.write(
+            '{"center_lat": 31.179, "center_lon": 121.59043,'
+            ' "corner_lat": 32.6794, "corner_lon": 120.09043, "interval": 10, '
+            '"value": 100, "center_lat_sign": "N", "center_lon_sign": "E", '
+            '"corner_lat_sign": "N", "corner_lon_sign": "E", "field": '
+            '"groundspeed", "func": "more than"}')
 
     if len(sys.argv) != 2:
         logger.error("Except 1 argument, get {}.".format(len(sys.argv) - 1))
