@@ -17,7 +17,7 @@
 # ask on Piazza.
 
 from state import State
-from data_source.fr24_crawler import Fr24Crawler
+from data_source.flightaware_crawler import FlightAwareCrawler as Fr24Crawler
 from web_server.server import web_server
 from cli.cli import cli_start
 import os
@@ -84,7 +84,7 @@ if __name__ == "__main__":
                 os.kill(ppid)
         else:
             try:
-                cralwer = Fr24Crawler((0, 0), 0)
+                cralwer = Fr24Crawler((0, 0), (0, 0))
                 cralwer.spin()
             except KeyboardInterrupt:
                 # The process is being killed, let the child process exit.

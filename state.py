@@ -10,6 +10,26 @@ class State:
         self.__file = filename
         self.__controller = BaseController()
 
+    def __select_data(self, data, config):
+        selected = {}
+        if config['func'] == 'more than':
+            selected = filter(lambda x: x[config['filed']] > config['value'],
+                              data)
+        elif config['func'] == 'more than or equal to':
+            selected = filter(lambda x: x[config['filed']] >= config['value'],
+                              data)
+        elif config['func'] == 'equal to':
+            selected = filter(lambda x: x[config['filed']] == config['value'],
+                              data)
+        elif config['func'] == 'less than':
+            selected = filter(lambda x: x[config['filed']] < config['value'],
+                              data)
+        else:
+            selected = filter(lambda x: x[config['filed']] <= config['value'],
+                              data)
+
+        return selected
+
     def spin(self, interval=2, max_loop=None):
         loop_count = 0
         while max_loop is None or loop_count < max_loop:
@@ -17,6 +37,9 @@ class State:
             print("Loading data...")
             with open(self.__file) as f:
                 data = json.load(f)
+            with open('/tmp/config.json') as f:
+                config = json.load(f)
+            data = self.__select_data(data, config)
             num = len(data)
             self.__controller.work_once(num)
             time.sleep(max(interval - time.time() + start_time, 0))

@@ -9,9 +9,11 @@ from flask import Flask
 from flask import render_template
 from flask import request
 import json
-
+# from ..light_controller import controller
 web_server = Flask(__name__)
 web_server.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+# state = controller.State()
 
 
 def dump_config(data):

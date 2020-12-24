@@ -77,17 +77,16 @@ class FlightAwareCrawler:
         self.__longitude_nw += move_lon
         self.__longitude_se += move_lon
 
-    def __upgrade_setting(self):
+    def __update_setting(self):
         with open('/tmp/config.json') as f:
             settings = json.load(f)
-        self.__latitude_center = max(min(int(settings['center_lat']), 90), -90)
-        self.__longitude_center = max(min(int(settings['center_lon']), 180),
-                                      -180)
-        self.__latitude_nw = max(min(int(settings['corner_lat']), 90), -90)
-        self.__longitude_nw = max(min(int(settings['corner_lon']), 180), -180)
+        self.__latitude_center = settings['center_lat']
+        self.__longitude_center = settings['center_lon']
+        self.__latitude_nw = settings['corner_lat']
+        self.__longitude_nw = settings['corner_lon']
         self.__latitude_se = 2 * self.__latitude_center - self.__latitude_nw
         self.__longitude_se = 2 * self.__longitude_center - self.__longitude_nw
-        self.__interval = max(min(int(settings['interval']), 3600), 0)
+        self.__interval = settings['interval']
 
     def __update_token(self):
         tokenregx = '\"VICINITY_TOKEN\":\"([A-Za-z0-9]*)\"'
@@ -236,5 +235,5 @@ class FlightAwareCrawler:
                 print("airplane numbers:", self.__plane_num)
                 print("Now time:", time.asctime(time.localtime()))
                 self.baddata = 0
-                self.__upgrade_setting()
+                self.__update_setting()
                 time.sleep(max(self.__interval - time.time() + start_time, 0))
