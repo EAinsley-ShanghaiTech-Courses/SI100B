@@ -8,6 +8,8 @@
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import redirect
+from flask import url_for
 import json
 # from ..light_controller import controller
 web_server = Flask(__name__)
@@ -58,7 +60,7 @@ def home():
 def config():
     if request.method == 'POST':
         dump_config(request.form)
-        return vis()
+        return redirect(url_for('vis'))
     return render_template("config.html")
 
 

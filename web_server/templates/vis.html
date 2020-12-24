@@ -7,7 +7,7 @@
     {{info['center_lat']|abs}}{{info['center_lat_sign']}},
     {{info['center_lon']|abs}}{{info['center_lon_sign']}}
   </p>
-  <p><b>Central coordinate:</b><br>
+  <p><b>North-western corner's coordinate:</b><br>
     {{info['corner_lat']|abs}}{{info['corner_lat_sign']}},
     {{info['corner_lon']|abs}}{{info['corner_lon_sign']}}
   </p>
@@ -24,4 +24,4 @@
 </div>
 
 <button onClick="document.location.reload()" type="button">Refresh</button>
-<button type="button"><a href="{{url_for('config')}}">Settings</a></button>
+<a href="{{url_for('config')}}">Settings</a>
