@@ -43,6 +43,10 @@ def _help():
 if __name__ == "__main__":
     logger = logging.getLogger("si100b_proj:main")
     logger.setLevel("INFO")
+    with open('/tmp/data.json','w') as f:
+        f.write('{}')
+    with open('/tmp/config.json','w') as f:
+        f.write('{}')
 
     if len(sys.argv) != 2:
         logger.error("Except 1 argument, get {}.".format(len(sys.argv) - 1))
