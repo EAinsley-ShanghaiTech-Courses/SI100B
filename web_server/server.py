@@ -66,7 +66,7 @@ def config():
 def vis():
     with open('/tmp/config.json') as f:
         info = json.load(f)
-    with open('tmp/results') as f:
+    with open('/tmp/results') as f:
         num = f.read()
     info['num'] = num
     return render_template("vis.html", info=info)
