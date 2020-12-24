@@ -10,7 +10,7 @@
 # YOU ARE NOT SUPPOSED TO EDIT THE FILE.
 #
 # This file is intended to provide a unified entrypoint for your web server
-# and the cralwer. You can treat this file as a black box. Being unable to
+# and the crawler. You can treat this file as a black box. Being unable to
 # know how the magic in this file works won't cause trouble to you finishing
 # the project. If you feel the need to edit it, do it at your own risk.
 # Understand every line of the file before proceed to editing. When in doubt,
