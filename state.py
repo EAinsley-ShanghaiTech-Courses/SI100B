@@ -28,7 +28,7 @@ class State:
             selected = filter(lambda x: x[config['filed']] <= config['value'],
                               data)
 
-        return selected
+        return list(selected)
 
     def spin(self, interval=2, max_loop=None):
         loop_count = 0
