@@ -52,7 +52,8 @@ if __name__ == "__main__":
             '"value": 100, "center_lat_sign": "N", "center_lon_sign": "E", '
             '"corner_lat_sign": "N", "corner_lon_sign": "E", "field": '
             '"groundspeed", "func": "more than"}')
-
+    with open('/tmp/results', 'w') as f:
+        f.write('0')
     if len(sys.argv) != 2:
         logger.error("Except 1 argument, get {}.".format(len(sys.argv) - 1))
         _help()

@@ -44,6 +44,8 @@ class State:
                 config = json.load(f)
             data = self.__select_data(data, config)
             num = len(data)
+            with open('/tmp/results', 'w') as f:
+                f.write(num)
             self.__controller.work_once(num)
             time.sleep(max(interval - time.time() + start_time, 0))
             loop_count += 1
