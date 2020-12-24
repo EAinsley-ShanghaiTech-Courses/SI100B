@@ -16,19 +16,19 @@ class State:
             if not v[config['field']]:
                 continue
             elif config['func'] == 'more than':
-                if v[config['field']] > int(config['value']):
+                if v[config['field']] > float(config['value']):
                     selected[k] = v
             elif config['func'] == 'more than or equal to':
-                if v[config['field']] >= int(config['value']):
+                if v[config['field']] >= float(config['value']):
                     selected[k] = v
             elif config['func'] == 'equal to':
-                if v[config['field']] == int(config['value']):
+                if v[config['field']] == float(config['value']):
                     selected[k] = v
             elif config['func'] == 'less than':
-                if v[config['field']] < int(config['value']):
+                if v[config['field']] < float(config['value']):
                     selected[k] = v
             else:
-                if v[config['field']] <= int(config['value']):
+                if v[config['field']] <= float(config['value']):
                     selected[k] = v
 
         return selected

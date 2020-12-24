@@ -32,17 +32,17 @@ def dump_config(data):
         if not data[k]:
             config[k] = v
         else:
-            config[k] = int(data[k])
+            config[k] = float(data[k])
     for k, v in data.items():
         if not v:
             config[k] = kEmpt[k]
         else:
             if k in ['center_lon', 'corner_lon']:
-                config[k] = min(max(int(v), 0), 180)
+                config[k] = min(max(float(v), 0), 180)
                 if data[k + '_sign'] == 'W':
                     config[k] = -config[k]
             elif k in ['center_lat', 'corner_lat']:
-                config[k] = min(max(int(v), 0), 90)
+                config[k] = min(max(float(v), 0), 90)
                 if data[k + '_sign'] == 'S':
                     config[k] = -config[k]
             else:
