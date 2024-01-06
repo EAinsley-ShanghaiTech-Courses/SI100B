@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<title>Config - Who is Flying </title>
+<h1>Settings</h1>
+<form action="{{url_for('config')}}" method="post">
+  <div>
+    <p><b>Central coordinate:</b></p>
+    <label for="center-lat">Latitude:</label><br>
+    <input type="text" id="center-lat" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="31.17940"
+      name="center_lat">
+    <select name="center_lat_sign">
+      <option value="N">N</option>
+      <option value="S">S</option>
+    </select>
+    <br>
+    <label for="center-lon">Longitude:</label><br>
+    <input type="text" id="center-lon" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="121.59043"
+      name="center_lon">
+    <select name="center_lon_sign">
+      <option value="E">E</option>
+      <option value="W">W</option>
+    </select>
+  </div>
+  <div>
+    <p><b>Northeastern corner's coordinate:</b></p>
+    <label for="corner-lat">Latitude:</label><br>
+    <input type="text" id="corner-lat" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="32.67940"
+      name="corner_lat">
+    <select name="corner_lat_sign">
+      <option value="N">N</option>
+      <option value="S">S</option>
+    </select>
+    <br>
+    <label for="corner-lon">Longitude:</label><br>
+    <input type="text" id="corner-lon" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="120.09043"
+      name="corner_lon">
+    <select name="corner_lon_sign">
+      <option value="E">E</option>
+      <option value="W">W</option>
+    </select>
+  </div>
+  <div>
+    <label for="interval">Interval</label><br>
+    <input type="text" id="interval" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="10" name="interval"> s
+  </div>
+  <br>
+  <p><b>Settings for the light:</b></p><br>
+  <select name="field">
+    <option value="groundspeed">Ground Speed</option>
+    <option value="altitude">altitude</option>
+  </select>
+  <select name="func">
+    <option value="more than">more than</option>
+    <option value="more than or equal to">more than or equal to</option>
+    <option value="equal to">equal to</option>
+    <option value="less than">less than</option>
+    <option value="less than or equal to">less than or equal to</option>
+  </select>
+  <input type="text" id="value" oninput="value=value.replace(/[^\d^.]/g,'')" placeholder="100" name="value">
+
+  <div class="button">
+    <button type="submit">Change</button>
+  </div>
+</form>
+<a href="{{url_for('vis')}}">Result page</a>
